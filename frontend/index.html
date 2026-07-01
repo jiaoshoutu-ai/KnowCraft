@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>思辨力 - 看新闻，选立场，练思维</title>
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- Vue Router CDN -->
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+
+  <!-- Configuration -->
+  <script src="config.js"></script>
+
+  <!-- API Module -->
+  <script src="js/api.js"></script>
+
+  <!-- Components -->
+  <script src="components/HomePage.js"></script>
+  <script src="components/TopicDetail.js"></script>
+  <script src="components/VotePage.js"></script>
+  <script src="components/AngleSelect.js"></script>
+  <script src="components/DifficultySelect.js"></script>
+  <script src="components/DebatePage.js"></script>
+  <script src="components/FeedbackPage.js"></script>
+  <script src="components/ProfilePage.js"></script>
+
+  <!-- Router Configuration -->
+  <script src="js/router.js"></script>
+
+  <!-- Vue App -->
+  <script src="js/app.js"></script>
+</body>
+</html>
