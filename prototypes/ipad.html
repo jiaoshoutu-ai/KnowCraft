@@ -1450,30 +1450,6 @@
                   <div style="font-size: 24px; font-weight: 700; color: #6C5CE7;">25分钟</div>
                 </div>
               </div>
-
-              <div class="info-title">🎭 可选角度</div>
-              <div class="perspectives-grid">
-                <div class="perspective-card" onclick="showScreen('vote')">
-                  <div class="perspective-icon">👨‍👩‍👧</div>
-                  <div class="perspective-name">家长代表</div>
-                  <div class="perspective-desc">担忧孩子沉迷短视频，呼吁平台承担责任</div>
-                </div>
-                <div class="perspective-card" onclick="showScreen('vote')">
-                  <div class="perspective-icon">🏢</div>
-                  <div class="perspective-name">平台代表</div>
-                  <div class="perspective-desc">强调技术中性，用户需要自律</div>
-                </div>
-                <div class="perspective-card" onclick="showScreen('vote')">
-                  <div class="perspective-icon">🎓</div>
-                  <div class="perspective-name">学生代表</div>
-                  <div class="perspective-desc">认为短视频有价值，反对过度限制</div>
-                </div>
-                <div class="perspective-card" onclick="showScreen('vote')">
-                  <div class="perspective-icon">🏛️</div>
-                  <div class="perspective-name">政府代表</div>
-                  <div class="perspective-desc">推动监管框架，平衡各方利益</div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -1551,72 +1527,6 @@
               <button class="btn btn-secondary" onclick="showScreen('topic-detail')">
                 <span>返回</span>
               </button>
-              <button class="btn btn-primary" onclick="showScreen('angle-select')">
-                <span>确认并继续</span>
-                <span>→</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Angle Select Screen -->
-      <div id="angle-select" class="screen">
-        <div class="top-nav">
-          <div class="logo">
-            <span>⚡</span>
-            <span>KnowCraft</span>
-          </div>
-          <div class="nav-tabs">
-            <div class="nav-tab" onclick="showScreen('vote')">
-              <span class="nav-tab-icon">←</span>
-              <span>返回投票</span>
-            </div>
-          </div>
-          <div class="user-info">
-            <div class="streak-badge">
-              <span>🔥</span>
-              <span>7天</span>
-            </div>
-            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
-          </div>
-        </div>
-
-        <div class="content-container" style="padding-top: 40px;">
-          <div class="vote-container">
-            <div class="vote-title">选择辩论角度</div>
-            <div class="vote-subtitle">选择你要扮演的角色，AI 将扮演其他角色与你辩论</div>
-
-            <div class="angle-grid">
-              <div class="angle-card" onclick="selectAngle(this)">
-                <div class="angle-icon">👨‍👩‍👧</div>
-                <div class="angle-name">家长代表</div>
-                <div class="angle-desc">担忧孩子沉迷短视频，呼吁平台承担责任</div>
-              </div>
-
-              <div class="angle-card" onclick="selectAngle(this)">
-                <div class="angle-icon">🏢</div>
-                <div class="angle-name">平台代表</div>
-                <div class="angle-desc">强调技术中性，用户需要自律</div>
-              </div>
-
-              <div class="angle-card" onclick="selectAngle(this)">
-                <div class="angle-icon">🎓</div>
-                <div class="angle-name">学生代表</div>
-                <div class="angle-desc">认为短视频有价值，反对过度限制</div>
-              </div>
-
-              <div class="angle-card" onclick="selectAngle(this)">
-                <div class="angle-icon">🏛️</div>
-                <div class="angle-name">政府代表</div>
-                <div class="angle-desc">推动监管框架，平衡各方利益</div>
-              </div>
-            </div>
-
-            <div class="button-group">
-              <button class="btn btn-secondary" onclick="showScreen('vote')">
-                <span>返回</span>
-              </button>
               <button class="btn btn-primary" onclick="showScreen('difficulty')">
                 <span>确认并继续</span>
                 <span>→</span>
@@ -1634,9 +1544,9 @@
             <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
-            <div class="nav-tab" onclick="showScreen('angle-select')">
+            <div class="nav-tab" onclick="showScreen('vote')">
               <span class="nav-tab-icon">←</span>
-              <span>返回角度</span>
+              <span>返回投票</span>
             </div>
           </div>
           <div class="user-info">
@@ -1703,7 +1613,7 @@
             </div>
 
             <div class="button-group">
-              <button class="btn btn-secondary" onclick="showScreen('angle-select')">
+              <button class="btn btn-secondary" onclick="showScreen('vote')">
                 <span>返回</span>
               </button>
               <button class="btn btn-primary" onclick="showScreen('debate')">
