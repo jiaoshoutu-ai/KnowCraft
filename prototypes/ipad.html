@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1024, initial-scale=1.0">
-  <title>HappyLearning - iPad Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HappyLearning - iPad端原型</title>
   <style>
     * {
       margin: 0;
@@ -11,170 +11,197 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --primary: #6C5CE7;
-      --primary-light: #A29BFE;
-      --primary-bg: #F0EEFF;
-      --accent: #00B894;
-      --warning: #FDCB6E;
-      --text: #2D3436;
-      --text-secondary: #636E72;
-      --text-light: #B2BEC3;
-      --bg: #F8F9FA;
-      --card: #FFFFFF;
-      --border: #E9ECEF;
-      --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-      --radius: 16px;
-      --radius-sm: 10px;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
+      padding: 40px 20px;
     }
 
-    /* iPad Frame */
     .ipad-frame {
       width: 1024px;
       height: 1366px;
-      margin: 20px auto;
-      background: var(--card);
-      border-radius: 32px;
+      background: #f5f5f5;
+      margin: 0 auto;
+      border-radius: 40px;
       overflow: hidden;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.4);
-      border: 12px solid #2d2d44;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.3);
       position: relative;
+    }
+
+    .screen-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100%;
+      animation: slideIn 0.3s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     /* Top Navigation Bar */
     .top-nav {
-      background: var(--card);
-      padding: 16px 32px;
-      border-bottom: 1px solid var(--border);
+      background: white;
+      padding: 20px 40px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
-      color: var(--primary);
+      color: #6C5CE7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .nav-tabs {
       display: flex;
       gap: 8px;
+      margin-left: auto;
     }
 
     .nav-tab {
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
+      padding: 12px 24px;
+      border-radius: 12px;
       font-size: 15px;
       font-weight: 600;
+      color: #636E72;
       cursor: pointer;
       transition: all 0.2s;
-      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .nav-tab:hover {
-      background: var(--primary-bg);
-      color: var(--primary);
+      background: #F0EEFF;
+      color: #6C5CE7;
     }
 
     .nav-tab.active {
-      background: var(--primary);
+      background: #6C5CE7;
       color: white;
     }
 
-    .nav-icon {
-      margin-right: 6px;
+    .nav-tab-icon {
+      font-size: 20px;
     }
 
     .user-info {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding-left: 20px;
+      border-left: 2px solid #E9ECEF;
     }
 
     .streak-badge {
-      background: var(--warning);
-      color: #6D4C00;
-      padding: 6px 14px;
-      border-radius: 16px;
+      background: linear-gradient(135deg, #FDCB6E, #E17055);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .user-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-    }
-
-    /* Screen Container */
-    .screen-container {
-      height: calc(100% - 73px);
-      overflow-y: auto;
-      padding: 32px;
+      font-size: 24px;
+      cursor: pointer;
     }
 
     /* Page Header */
     .page-header {
-      margin-bottom: 28px;
+      background: white;
+      padding: 32px 40px;
+      margin-bottom: 24px;
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
-      color: var(--text);
+      color: #2D3436;
       margin-bottom: 8px;
     }
 
     .page-subtitle {
-      font-size: 15px;
-      color: var(--text-secondary);
+      font-size: 16px;
+      color: #636E72;
     }
 
-    /* Stats Grid - 2 columns for iPad */
+    /* Content Container */
+    .content-container {
+      padding: 0 40px 40px;
+    }
+
+    /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
     }
 
     .stat-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
     }
 
     .stat-label {
-      font-size: 13px;
-      color: var(--text-secondary);
+      font-size: 14px;
+      color: #636E72;
       margin-bottom: 8px;
     }
 
     .stat-value {
       font-size: 32px;
       font-weight: 700;
-      color: var(--primary);
+      color: #6C5CE7;
+      margin-bottom: 8px;
     }
 
     .stat-change {
-      font-size: 12px;
-      color: var(--accent);
-      margin-top: 4px;
+      font-size: 13px;
+      color: #00B894;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     /* Section Header */
@@ -182,55 +209,55 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .section-title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
-      color: var(--text);
+      color: #2D3436;
     }
 
     .view-all {
-      font-size: 14px;
-      color: var(--primary);
-      cursor: pointer;
+      font-size: 15px;
+      color: #6C5CE7;
       font-weight: 600;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      transition: all 0.2s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .view-all:hover {
-      background: var(--primary-bg);
+      text-decoration: underline;
     }
 
-    /* Topics Grid - 2 columns for iPad */
+    /* Topics Grid */
     .topics-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-bottom: 32px;
+      gap: 24px;
+      margin-bottom: 40px;
     }
 
     .topic-card {
-      background: var(--card);
-      border-radius: var(--radius);
+      background: white;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
       cursor: pointer;
       transition: all 0.3s;
     }
 
     .topic-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     }
 
     .topic-thumbnail {
       width: 100%;
-      height: 200px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      height: 240px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
       position: relative;
       display: flex;
       align-items: center;
@@ -238,26 +265,22 @@
     }
 
     .play-button {
-      width: 72px;
-      height: 72px;
-      background: rgba(255,255,255,0.9);
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.95);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
-      transition: all 0.2s;
-    }
-
-    .topic-card:hover .play-button {
-      transform: scale(1.1);
+      font-size: 36px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
 
     .topic-duration {
       position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: rgba(0,0,0,0.7);
+      bottom: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.8);
       color: white;
       padding: 6px 12px;
       border-radius: 12px;
@@ -267,9 +290,9 @@
 
     .topic-tag {
       position: absolute;
-      top: 12px;
-      left: 12px;
-      background: var(--accent);
+      top: 16px;
+      left: 16px;
+      background: #00B894;
       color: white;
       padding: 6px 12px;
       border-radius: 12px;
@@ -278,35 +301,35 @@
     }
 
     .topic-info {
-      padding: 20px;
+      padding: 24px;
     }
 
     .topic-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 10px;
+      color: #2D3436;
+      margin-bottom: 12px;
       line-height: 1.4;
     }
 
     .topic-description {
-      font-size: 14px;
-      color: var(--text-secondary);
+      font-size: 15px;
+      color: #636E72;
       line-height: 1.6;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .topic-meta {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .topic-tag-small {
-      background: var(--primary-bg);
-      color: var(--primary);
-      padding: 5px 12px;
+      background: #F0EEFF;
+      color: #6C5CE7;
+      padding: 6px 12px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 600;
@@ -315,51 +338,417 @@
     .topic-stats {
       margin-left: auto;
       font-size: 13px;
-      color: var(--text-light);
+      color: #B2BEC3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Debate Section */
-    .debate-preview {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
+    /* Detail Page */
+    .detail-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
       margin-bottom: 32px;
     }
 
-    .debate-header {
+    .video-section {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .video-player {
+      width: 100%;
+      height: 320px;
+      background: linear-gradient(135deg, #2D3436, #636E72);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      cursor: pointer;
+    }
+
+    .video-info {
+      padding: 24px;
+    }
+
+    .video-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .video-description {
+      font-size: 15px;
+      color: #636E72;
+      line-height: 1.6;
       margin-bottom: 20px;
     }
 
-    .debate-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .debate-round {
-      background: var(--primary-bg);
-      color: var(--primary);
-      padding: 6px 14px;
+    .key-points {
+      background: #F0EEFF;
       border-radius: 16px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 20px;
     }
 
-    .debate-messages {
+    .key-points-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #6C5CE7;
+      margin-bottom: 12px;
+    }
+
+    .key-point-list {
       display: flex;
       flex-direction: column;
+      gap: 10px;
+    }
+
+    .key-point-item {
+      font-size: 14px;
+      color: #2D3436;
+      line-height: 1.5;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .key-point-item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #6C5CE7;
+      font-weight: 700;
+    }
+
+    .info-section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .info-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 20px;
+    }
+
+    .perspectives-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .perspective-card {
+      background: #F8F9FA;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .perspective-card:hover {
+      background: #F0EEFF;
+      border-color: #6C5CE7;
+    }
+
+    .perspective-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .perspective-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 8px;
+    }
+
+    .perspective-desc {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    /* Vote Page */
+    .vote-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .vote-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2D3436;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .vote-subtitle {
+      font-size: 16px;
+      color: #636E72;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .vote-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .vote-option {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vote-option:hover {
+      border-color: #6C5CE7;
+      box-shadow: 0 4px 16px rgba(108,92,231,0.15);
+    }
+
+    .vote-option.selected {
+      border-color: #6C5CE7;
+      background: #F0EEFF;
+    }
+
+    .vote-option-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .vote-radio {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #E9ECEF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .vote-option.selected .vote-radio {
+      border-color: #6C5CE7;
+      background: #6C5CE7;
+    }
+
+    .vote-option.selected .vote-radio::after {
+      content: "✓";
+      color: white;
+      font-weight: 700;
+    }
+
+    .vote-role {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .vote-description {
+      font-size: 14px;
+      color: #636E72;
+      line-height: 1.6;
+    }
+
+    /* Angle Select */
+    .angle-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .angle-card {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .angle-card:hover {
+      border-color: #6C5CE7;
+      box-shadow: 0 4px 16px rgba(108,92,231,0.15);
+    }
+
+    .angle-card.selected {
+      border-color: #6C5CE7;
+      background: #F0EEFF;
+    }
+
+    .angle-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .angle-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 12px;
+    }
+
+    .angle-desc {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    /* Difficulty Select */
+    .difficulty-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .difficulty-card {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 20px;
+      padding: 32px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .difficulty-card:hover {
+      border-color: #6C5CE7;
+      box-shadow: 0 4px 16px rgba(108,92,231,0.15);
+    }
+
+    .difficulty-card.selected {
+      border-color: #6C5CE7;
+      background: #F0EEFF;
+    }
+
+    .difficulty-header {
+      display: flex;
+      align-items: center;
       gap: 16px;
       margin-bottom: 20px;
     }
 
-    .message {
+    .difficulty-icon {
+      font-size: 48px;
+    }
+
+    .difficulty-info {
+      flex: 1;
+    }
+
+    .difficulty-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 8px;
+    }
+
+    .difficulty-stars {
+      color: #FDCB6E;
+      font-size: 18px;
+    }
+
+    .difficulty-desc {
+      font-size: 14px;
+      color: #636E72;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .difficulty-features {
       display: flex;
-      gap: 12px;
-      max-width: 75%;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .feature-tag {
+      background: #F0EEFF;
+      color: #6C5CE7;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Debate Page */
+    .debate-container {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 24px;
+      height: calc(100% - 120px);
+    }
+
+    .debate-main {
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .debate-header {
+      background: #F8F9FA;
+      padding: 20px 24px;
+      border-bottom: 2px solid #E9ECEF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .debate-round {
+      font-size: 18px;
+      font-weight: 700;
+      color: #6C5CE7;
+    }
+
+    .debate-timer {
+      font-size: 16px;
+      color: #636E72;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .debate-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .message {
+      max-width: 70%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .message.ai {
@@ -368,301 +757,1231 @@
 
     .message.user {
       align-self: flex-end;
-      flex-direction: row-reverse;
     }
 
-    .message-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    .message.ai .message-avatar {
-      background: var(--primary-bg);
-    }
-
-    .message.user .message-avatar {
-      background: var(--accent);
-    }
-
-    .message-content {
-      background: var(--bg);
-      padding: 14px 18px;
-      border-radius: var(--radius-sm);
+    .message-bubble {
+      padding: 16px 20px;
+      border-radius: 20px;
       font-size: 15px;
       line-height: 1.6;
     }
 
-    .message.user .message-content {
-      background: var(--primary);
+    .message.ai .message-bubble {
+      background: #F8F9FA;
+      color: #2D3436;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-bubble {
+      background: #6C5CE7;
       color: white;
+      border-bottom-right-radius: 4px;
     }
 
     .message-role {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 4px;
-      opacity: 0.7;
+      margin-bottom: 8px;
+      color: #636E72;
     }
 
     .message.ai .message-role {
-      color: var(--primary);
-      opacity: 1;
+      color: #6C5CE7;
     }
 
     .debate-input {
+      background: #F8F9FA;
+      padding: 20px 24px;
+      border-top: 2px solid #E9ECEF;
       display: flex;
       gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
     }
 
-    .debate-input input {
+    .input-field {
       flex: 1;
-      padding: 14px 18px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      border: 2px solid #E9ECEF;
+      border-radius: 24px;
       font-size: 15px;
-      font-family: inherit;
-    }
-
-    .debate-input input:focus {
       outline: none;
-      border-color: var(--primary);
     }
 
-    .btn {
-      padding: 12px 24px;
-      border-radius: var(--radius-sm);
+    .input-field:focus {
+      border-color: #6C5CE7;
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      background: #6C5CE7;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn:hover {
+      background: #5B4BC4;
+    }
+
+    .debate-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .sidebar-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 16px;
+    }
+
+    .hint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hint-item {
+      background: #F0EEFF;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #6C5CE7;
+      line-height: 1.5;
+    }
+
+    /* Feedback Page */
+    .feedback-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .score-overview {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      border-radius: 24px;
+      padding: 40px;
+      color: white;
+      text-align: center;
+      margin-bottom: 32px;
+      box-shadow: 0 8px 24px rgba(108,92,231,0.3);
+    }
+
+    .score-label {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .score-value {
+      font-size: 72px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .score-max {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+
+    .score-breakdown {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .score-item {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .score-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .score-name {
       font-size: 14px;
       font-weight: 600;
-      cursor: pointer;
+      color: #636E72;
+      margin-bottom: 12px;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: #F8F9FA;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .score-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #6C5CE7;
+    }
+
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .feedback-section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .feedback-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 20px;
+    }
+
+    .feedback-item {
+      padding: 16px 0;
+      border-bottom: 1px solid #F8F9FA;
+    }
+
+    .feedback-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .feedback-icon {
+      font-size: 24px;
+    }
+
+    .feedback-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .feedback-text {
+      font-size: 14px;
+      color: #636E72;
+      line-height: 1.6;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
       border: none;
+      cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
       color: white;
+      box-shadow: 0 4px 16px rgba(108,92,231,0.3);
     }
 
     .btn-primary:hover {
-      background: #5a4bd6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108,92,231,0.4);
     }
 
-    /* Landscape mode */
-    @media (orientation: landscape) {
+    .btn-secondary {
+      background: white;
+      color: #6C5CE7;
+      border: 2px solid #6C5CE7;
+    }
+
+    .btn-secondary:hover {
+      background: #F0EEFF;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    /* Profile Page */
+    .profile-header {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      border-radius: 24px;
+      padding: 48px;
+      color: white;
+      text-align: center;
+      margin-bottom: 32px;
+      box-shadow: 0 8px 24px rgba(108,92,231,0.3);
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .profile-name {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .profile-level {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .profile-stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .profile-stat-value {
+      font-size: 40px;
+      font-weight: 700;
+      color: #6C5CE7;
+      margin-bottom: 8px;
+    }
+
+    .profile-stat-label {
+      font-size: 15px;
+      color: #636E72;
+    }
+
+    .badges-section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .badges-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 24px;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+
+    .badge-card {
+      background: #F8F9FA;
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .badge-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .badge-card.locked {
+      opacity: 0.3;
+    }
+
+    .badge-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .badge-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2D3436;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
       .ipad-frame {
-        width: 1366px;
-        height: 1024px;
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        border-radius: 0;
       }
 
-      .topics-grid {
+      body {
+        padding: 0;
+      }
+
+      .detail-container,
+      .debate-container {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid,
+      .score-breakdown,
+      .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .topics-grid,
+      .vote-options,
+      .difficulty-grid,
+      .feedback-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .angle-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .badges-grid {
         grid-template-columns: repeat(3, 1fr);
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
 </head>
 <body>
-  <!-- iPad Frame -->
   <div class="ipad-frame">
-    <!-- Top Navigation Bar -->
-    <div class="top-nav">
-      <div class="logo">⚡ HappyLearning</div>
-
-      <div class="nav-tabs">
-        <div class="nav-tab active">
-          <span class="nav-icon">🏠</span>首页
-        </div>
-        <div class="nav-tab">
-          <span class="nav-icon">📚</span>话题库
-        </div>
-        <div class="nav-tab">
-          <span class="nav-icon">⚔️</span>我的辩论
-        </div>
-        <div class="nav-tab">
-          <span class="nav-icon">📊</span>学习报告
-        </div>
-        <div class="nav-tab">
-          <span class="nav-icon">🏆</span>成就徽章
-        </div>
-      </div>
-
-      <div class="user-info">
-        <div class="streak-badge">🔥 7天</div>
-        <div class="user-avatar">👤</div>
-      </div>
-    </div>
-
-    <!-- Screen Container -->
     <div class="screen-container">
-      <!-- Page Header -->
-      <div class="page-header">
-        <div class="page-title">今日推荐</div>
-        <div class="page-subtitle">选择一个话题，开始你的思辨之旅</div>
-      </div>
-
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">完成辩论</div>
-          <div class="stat-value">12</div>
-          <div class="stat-change">↑ 本周 +3</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">平均得分</div>
-          <div class="stat-value">8.5</div>
-          <div class="stat-change">↑ 较上月 +0.8</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">连续打卡</div>
-          <div class="stat-value">7天</div>
-          <div class="stat-change">🔥 继续保持</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">能力等级</div>
-          <div class="stat-value">Lv.3</div>
-          <div class="stat-change">距离 Lv.4 还需 5 场</div>
-        </div>
-      </div>
-
-      <!-- Topics Section -->
-      <div class="section-header">
-        <div class="section-title">热门话题</div>
-        <div class="view-all">查看全部 →</div>
-      </div>
-
-      <div class="topics-grid">
-        <!-- Topic Card 1 -->
-        <div class="topic-card">
-          <div class="topic-thumbnail">
-            <div class="play-button">▶️</div>
-            <div class="topic-duration">25分钟</div>
-            <div class="topic-tag">热门</div>
+      <!-- Home Screen -->
+      <div id="home-screen" class="screen active">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
           </div>
-          <div class="topic-info">
-            <div class="topic-title">短视频算法正在"偷走"孩子的时间？</div>
-            <div class="topic-description">探讨短视频推荐算法对青少年的影响，平台、家长、学生、政府各方应承担什么责任。</div>
-            <div class="topic-meta">
-              <span class="topic-tag-small">科技</span>
-              <span class="topic-tag-small">教育</span>
-              <span class="topic-stats">12.5k 人观看</span>
+          <div class="nav-tabs">
+            <div class="nav-tab active">
+              <span class="nav-tab-icon">🏠</span>
+              <span>首页</span>
+            </div>
+            <div class="nav-tab">
+              <span class="nav-tab-icon">📚</span>
+              <span>话题库</span>
+            </div>
+            <div class="nav-tab">
+              <span class="nav-tab-icon">⚔️</span>
+              <span>我的辩论</span>
             </div>
           </div>
-        </div>
-
-        <!-- Topic Card 2 -->
-        <div class="topic-card">
-          <div class="topic-thumbnail">
-            <div class="play-button">▶️</div>
-            <div class="topic-duration">20分钟</div>
-            <div class="topic-tag">新</div>
-          </div>
-          <div class="topic-info">
-            <div class="topic-title">学生用 AI 写作业，该不该禁止？</div>
-            <div class="topic-description">AI 工具的普及让作业变得复杂，学校应该如何应对？技术进步与学术诚信如何平衡？</div>
-            <div class="topic-meta">
-              <span class="topic-tag-small">教育</span>
-              <span class="topic-tag-small">科技</span>
-              <span class="topic-stats">8.3k 人观看</span>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
             </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
           </div>
         </div>
 
-        <!-- Topic Card 3 -->
-        <div class="topic-card">
-          <div class="topic-thumbnail">
-            <div class="play-button">▶️</div>
-            <div class="topic-duration">18分钟</div>
-          </div>
-          <div class="topic-info">
-            <div class="topic-title">学校禁止带手机，合理吗？</div>
-            <div class="topic-description">多地学校出台手机禁令，学生、家长、教师对此看法不一。自由与管理的边界在哪里？</div>
-            <div class="topic-meta">
-              <span class="topic-tag-small">教育</span>
-              <span class="topic-tag-small">管理</span>
-              <span class="topic-stats">15.2k 人观看</span>
+        <div class="page-header">
+          <div class="page-title">欢迎回来，思辨小达人</div>
+          <div class="page-subtitle">今天想要挑战哪个话题？</div>
+        </div>
+
+        <div class="content-container">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">完成辩论</div>
+              <div class="stat-value">12</div>
+              <div class="stat-change">
+                <span>↑</span>
+                <span>本周 +3</span>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Topic Card 4 -->
-        <div class="topic-card">
-          <div class="topic-thumbnail">
-            <div class="play-button">▶️</div>
-            <div class="topic-duration">22分钟</div>
-          </div>
-          <div class="topic-info">
-            <div class="topic-title">网络游戏是"电子海洛因"吗？</div>
-            <div class="topic-description">游戏产业的快速发展带来了争议，游戏对青少年的影响究竟是正面还是负面？</div>
-            <div class="topic-meta">
-              <span class="topic-tag-small">娱乐</span>
-              <span class="topic-tag-small">青少年</span>
-              <span class="topic-stats">9.8k 人观看</span>
+            <div class="stat-card">
+              <div class="stat-label">平均得分</div>
+              <div class="stat-value">8.5</div>
+              <div class="stat-change">
+                <span>↑</span>
+                <span>较上月 +0.8</span>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Debate Preview -->
-      <div class="section-header">
-        <div class="section-title">最近辩论</div>
-        <div class="view-all">查看全部 →</div>
-      </div>
-
-      <div class="debate-preview">
-        <div class="debate-header">
-          <div class="debate-title">📱 短视频算法正在"偷走"孩子的时间？</div>
-          <div class="debate-round">第 3/5 轮</div>
-        </div>
-
-        <div class="debate-messages">
-          <div class="message ai">
-            <div class="message-avatar">🤖</div>
-            <div>
-              <div class="message-role">家长代表</div>
-              <div class="message-content">
-                作为家长，我非常担心短视频算法对孩子造成的危害。数据显示，青少年日均使用短视频超过2小时，严重影响学习和睡眠。
+            <div class="stat-card">
+              <div class="stat-label">连续打卡</div>
+              <div class="stat-value">7天</div>
+              <div class="stat-change">
+                <span>🔥</span>
+                <span>继续保持</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">能力等级</div>
+              <div class="stat-value">Lv.3</div>
+              <div class="stat-change">
+                <span>距离 Lv.4 还需 5 场</span>
               </div>
             </div>
           </div>
 
-          <div class="message user">
-            <div class="message-avatar">👤</div>
-            <div>
-              <div class="message-role">你</div>
-              <div class="message-content">
-                我理解家长的担心，但短视频也是我们学习和放松的方式之一。很多同学通过短视频学到了课本上没有的知识。
-              </div>
+          <div class="section-header">
+            <div class="section-title">今日推荐</div>
+            <div class="view-all">
+              <span>查看全部</span>
+              <span>→</span>
             </div>
           </div>
 
-          <div class="message ai">
-            <div class="message-avatar">🤖</div>
-            <div>
-              <div class="message-role">家长代表</div>
-              <div class="message-content">
-                你说得有一定道理，但问题在于算法会精准推送让人上瘾的内容。青少年的自控能力还在发展中，很容易沉迷其中。你认为平台应该如何改进算法来保护青少年？
+          <div class="topics-grid">
+            <div class="topic-card" onclick="showScreen('topic-detail')">
+              <div class="topic-thumbnail">
+                <div class="play-button">▶️</div>
+                <div class="topic-duration">25分钟</div>
+                <div class="topic-tag">热门</div>
+              </div>
+              <div class="topic-info">
+                <div class="topic-title">短视频算法正在"偷走"孩子的时间？</div>
+                <div class="topic-description">探讨短视频推荐算法对青少年的影响，平台、家长、学生、政府各方应承担什么责任。</div>
+                <div class="topic-meta">
+                  <span class="topic-tag-small">科技</span>
+                  <span class="topic-tag-small">教育</span>
+                  <span class="topic-stats">
+                    <span>👁️</span>
+                    <span>12.5k</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic-card">
+              <div class="topic-thumbnail">
+                <div class="play-button">▶️</div>
+                <div class="topic-duration">20分钟</div>
+                <div class="topic-tag">新</div>
+              </div>
+              <div class="topic-info">
+                <div class="topic-title">学生用 AI 写作业，该不该禁止？</div>
+                <div class="topic-description">AI 工具的普及让作业变得复杂，学校应该如何应对？技术进步与学术诚信如何平衡？</div>
+                <div class="topic-meta">
+                  <span class="topic-tag-small">教育</span>
+                  <span class="topic-tag-small">科技</span>
+                  <span class="topic-stats">
+                    <span>👁️</span>
+                    <span>8.3k</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="debate-input">
-          <input type="text" placeholder="输入你的观点，继续辩论...">
-          <button class="btn btn-primary">发送</button>
+      <!-- Topic Detail Screen -->
+      <div id="topic-detail" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('home-screen')">
+              <span class="nav-tab-icon">←</span>
+              <span>返回首页</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 32px;">
+          <div class="detail-container">
+            <div class="video-section">
+              <div class="video-player">▶️</div>
+              <div class="video-info">
+                <div class="video-title">短视频算法正在"偷走"孩子的时间？</div>
+                <div class="video-description">
+                  本期节目深入探讨了短视频平台算法推荐机制对未成年人的影响。调查显示，青少年平均每天花费2-3小时刷短视频，其中不少学生表示"一刷就停不下来"。专家分析指出，算法推荐机制通过精准捕捉用户兴趣，不断优化内容推送，形成了一个"信息茧房"，让用户难以自拔。
+                </div>
+                <div class="key-points">
+                  <div class="key-points-title">🔑 关键争议点</div>
+                  <div class="key-point-list">
+                    <div class="key-point-item">算法推荐是否应该对青少年进行特殊限制？</div>
+                    <div class="key-point-item">平台、家长、学校、政府各应承担什么责任？</div>
+                    <div class="key-point-item">技术进步与青少年保护如何平衡？</div>
+                    <div class="key-point-item">青少年自身的媒介素养如何培养？</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-section">
+              <div class="info-title">📊 话题数据</div>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                <div style="background: #F8F9FA; padding: 16px; border-radius: 12px;">
+                  <div style="font-size: 13px; color: #636E72; margin-bottom: 8px;">观看人数</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #6C5CE7;">12.5k</div>
+                </div>
+                <div style="background: #F8F9FA; padding: 16px; border-radius: 12px;">
+                  <div style="font-size: 13px; color: #636E72; margin-bottom: 8px;">辩论次数</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #6C5CE7;">3.2k</div>
+                </div>
+                <div style="background: #F8F9FA; padding: 16px; border-radius: 12px;">
+                  <div style="font-size: 13px; color: #636E72; margin-bottom: 8px;">平均得分</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #6C5CE7;">7.8</div>
+                </div>
+                <div style="background: #F8F9FA; padding: 16px; border-radius: 12px;">
+                  <div style="font-size: 13px; color: #636E72; margin-bottom: 8px;">视频时长</div>
+                  <div style="font-size: 24px; font-weight: 700; color: #6C5CE7;">25分钟</div>
+                </div>
+              </div>
+
+              <div class="info-title">🎭 可选角度</div>
+              <div class="perspectives-grid">
+                <div class="perspective-card" onclick="showScreen('vote')">
+                  <div class="perspective-icon">👨‍👩‍👧</div>
+                  <div class="perspective-name">家长代表</div>
+                  <div class="perspective-desc">担忧孩子沉迷短视频，呼吁平台承担责任</div>
+                </div>
+                <div class="perspective-card" onclick="showScreen('vote')">
+                  <div class="perspective-icon">🏢</div>
+                  <div class="perspective-name">平台代表</div>
+                  <div class="perspective-desc">强调技术中性，用户需要自律</div>
+                </div>
+                <div class="perspective-card" onclick="showScreen('vote')">
+                  <div class="perspective-icon">🎓</div>
+                  <div class="perspective-name">学生代表</div>
+                  <div class="perspective-desc">认为短视频有价值，反对过度限制</div>
+                </div>
+                <div class="perspective-card" onclick="showScreen('vote')">
+                  <div class="perspective-icon">🏛️</div>
+                  <div class="perspective-name">政府代表</div>
+                  <div class="perspective-desc">推动监管框架，平衡各方利益</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="btn btn-primary" onclick="showScreen('vote')">
+              <span>开始辩论</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vote Screen -->
+      <div id="vote" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('topic-detail')">
+              <span class="nav-tab-icon">←</span>
+              <span>返回详情</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 40px;">
+          <div class="vote-container">
+            <div class="vote-title">选择你的立场</div>
+            <div class="vote-subtitle">在辩论开始前，先看看大家的选择</div>
+
+            <div class="vote-options">
+              <div class="vote-option" onclick="selectVote(this)">
+                <div class="vote-option-header">
+                  <div class="vote-radio"></div>
+                  <div class="vote-role">👨‍👩‍👧 家长代表</div>
+                </div>
+                <div class="vote-description">短视频平台应该承担主要责任，算法推荐机制诱导孩子沉迷，影响学习和身心健康。</div>
+              </div>
+
+              <div class="vote-option" onclick="selectVote(this)">
+                <div class="vote-option-header">
+                  <div class="vote-radio"></div>
+                  <div class="vote-role">🏢 平台代表</div>
+                </div>
+                <div class="vote-description">算法是技术中性的工具，关键在于用户如何使用。平台已提供青少年模式，家长应加强监管。</div>
+              </div>
+
+              <div class="vote-option" onclick="selectVote(this)">
+                <div class="vote-option-header">
+                  <div class="vote-radio"></div>
+                  <div class="vote-role">🎓 学生代表</div>
+                </div>
+                <div class="vote-description">短视频也有教育价值，不应一刀切禁止。学生需要学会自律，合理使用时间。</div>
+              </div>
+
+              <div class="vote-option" onclick="selectVote(this)">
+                <div class="vote-option-header">
+                  <div class="vote-radio"></div>
+                  <div class="vote-role">🏛️ 政府代表</div>
+                </div>
+                <div class="vote-description">需要建立完善的监管框架，平衡技术创新与青少年保护，制定行业标准。</div>
+              </div>
+            </div>
+
+            <div class="button-group">
+              <button class="btn btn-secondary" onclick="showScreen('topic-detail')">
+                <span>返回</span>
+              </button>
+              <button class="btn btn-primary" onclick="showScreen('angle-select')">
+                <span>确认并继续</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Angle Select Screen -->
+      <div id="angle-select" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('vote')">
+              <span class="nav-tab-icon">←</span>
+              <span>返回投票</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 40px;">
+          <div class="vote-container">
+            <div class="vote-title">选择辩论角度</div>
+            <div class="vote-subtitle">选择你要扮演的角色，AI 将扮演其他角色与你辩论</div>
+
+            <div class="angle-grid">
+              <div class="angle-card" onclick="selectAngle(this)">
+                <div class="angle-icon">👨‍👩‍👧</div>
+                <div class="angle-name">家长代表</div>
+                <div class="angle-desc">担忧孩子沉迷短视频，呼吁平台承担责任</div>
+              </div>
+
+              <div class="angle-card" onclick="selectAngle(this)">
+                <div class="angle-icon">🏢</div>
+                <div class="angle-name">平台代表</div>
+                <div class="angle-desc">强调技术中性，用户需要自律</div>
+              </div>
+
+              <div class="angle-card" onclick="selectAngle(this)">
+                <div class="angle-icon">🎓</div>
+                <div class="angle-name">学生代表</div>
+                <div class="angle-desc">认为短视频有价值，反对过度限制</div>
+              </div>
+
+              <div class="angle-card" onclick="selectAngle(this)">
+                <div class="angle-icon">🏛️</div>
+                <div class="angle-name">政府代表</div>
+                <div class="angle-desc">推动监管框架，平衡各方利益</div>
+              </div>
+            </div>
+
+            <div class="button-group">
+              <button class="btn btn-secondary" onclick="showScreen('vote')">
+                <span>返回</span>
+              </button>
+              <button class="btn btn-primary" onclick="showScreen('difficulty')">
+                <span>确认并继续</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difficulty Select Screen -->
+      <div id="difficulty" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('angle-select')">
+              <span class="nav-tab-icon">←</span>
+              <span>返回角度</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 40px;">
+          <div class="vote-container">
+            <div class="vote-title">选择难度</div>
+            <div class="vote-subtitle">难度越高，AI 反驳越犀利，准备好接受挑战了吗？</div>
+
+            <div class="difficulty-grid">
+              <div class="difficulty-card" onclick="selectDifficulty(this)">
+                <div class="difficulty-header">
+                  <div class="difficulty-icon">🌱</div>
+                  <div class="difficulty-info">
+                    <div class="difficulty-name">新手友好</div>
+                    <div class="difficulty-stars">⭐</div>
+                  </div>
+                </div>
+                <div class="difficulty-desc">AI 会温和回应，提供论点提示和引导，适合第一次辩论的同学。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💡 论点提示</span>
+                  <span class="feature-tag">🤝 温和反驳</span>
+                  <span class="feature-tag">📝 脚手架辅助</span>
+                </div>
+              </div>
+
+              <div class="difficulty-card" onclick="selectDifficulty(this)">
+                <div class="difficulty-header">
+                  <div class="difficulty-icon">⚡</div>
+                  <div class="difficulty-info">
+                    <div class="difficulty-name">进阶挑战</div>
+                    <div class="difficulty-stars">⭐⭐⭐</div>
+                  </div>
+                </div>
+                <div class="difficulty-desc">AI 正常反驳，会指出你论证中的逻辑漏洞。有一定辩论基础的同学试试！</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">🔍 逻辑分析</span>
+                  <span class="feature-tag">🎯 针对性反驳</span>
+                </div>
+              </div>
+
+              <div class="difficulty-card" onclick="selectDifficulty(this)">
+                <div class="difficulty-header">
+                  <div class="difficulty-icon">🔥</div>
+                  <div class="difficulty-info">
+                    <div class="difficulty-name">高手对决</div>
+                    <div class="difficulty-stars">⭐⭐⭐⭐⭐</div>
+                  </div>
+                </div>
+                <div class="difficulty-desc">AI 犀利质疑，不给喘息空间。深挖每个矛盾点，真正考验你的思辨力。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💥 犀利质疑</span>
+                  <span class="feature-tag">🧠 深度追问</span>
+                  <span class="feature-tag">⏱️ 快节奏</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="button-group">
+              <button class="btn btn-secondary" onclick="showScreen('angle-select')">
+                <span>返回</span>
+              </button>
+              <button class="btn btn-primary" onclick="showScreen('debate')">
+                <span>开始辩论</span>
+                <span>⚔️</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Debate Screen -->
+      <div id="debate" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('feedback')">
+              <span class="nav-tab-icon">⏭️</span>
+              <span>结束辩论</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 24px;">
+          <div class="debate-container">
+            <div class="debate-main">
+              <div class="debate-header">
+                <div class="debate-round">第 2/5 轮</div>
+                <div class="debate-timer">
+                  <span>⏱️</span>
+                  <span>02:30</span>
+                </div>
+              </div>
+
+              <div class="debate-messages">
+                <div class="message ai">
+                  <div class="message-role">🤖 AI · 平台代表</div>
+                  <div class="message-bubble">
+                    作为平台代表，我想说的是，我们的算法推荐机制本质上是中性的技术工具。它根据用户的兴趣偏好推荐内容，这是为了提升用户体验。如果青少年沉迷其中，更多是因为缺乏自律能力，而不是算法本身的问题。你认为呢？
+                  </div>
+                </div>
+
+                <div class="message user">
+                  <div class="message-role">🎓 你 · 学生代表</div>
+                  <div class="message-bubble">
+                    我理解平台想要提升用户体验的初衷，但算法推荐机制实际上是在利用人类的心理弱点。无限下拉、自动播放、个性化推荐，这些设计都是为了让用户"停不下来"。对于自控力还在发展中的青少年来说，这几乎是不可能抵抗的诱惑。
+                  </div>
+                </div>
+
+                <div class="message ai">
+                  <div class="message-role">🤖 AI · 平台代表</div>
+                  <div class="message-bubble">
+                    你提到了"心理弱点"，但我想指出的是，我们同样提供了"青少年模式"、"使用时间提醒"等功能。问题在于，很多家长并没有开启这些功能，或者青少年自己关闭了它们。这是不是说明，监管的责任更多应该在家长身上？
+                  </div>
+                </div>
+              </div>
+
+              <div class="debate-input">
+                <input type="text" class="input-field" placeholder="输入你的观点...">
+                <button class="send-btn">➤</button>
+              </div>
+            </div>
+
+            <div class="debate-sidebar">
+              <div class="sidebar-card">
+                <div class="sidebar-title">💡 论点提示</div>
+                <div class="hint-list">
+                  <div class="hint-item">可以引用研究数据说明青少年自控力的发展阶段</div>
+                  <div class="hint-item">举例说明算法设计的具体"上瘾"机制</div>
+                  <div class="hint-item">对比成人和青少年对算法的不同反应</div>
+                </div>
+              </div>
+
+              <div class="sidebar-card">
+                <div class="sidebar-title">📊 辩论数据</div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="font-size: 13px; color: #636E72;">你的发言</span>
+                    <span style="font-size: 15px; font-weight: 700; color: #6C5CE7;">2 次</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="font-size: 13px; color: #636E72;">AI 发言</span>
+                    <span style="font-size: 15px; font-weight: 700; color: #6C5CE7;">2 次</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="font-size: 13px; color: #636E72;">总字数</span>
+                    <span style="font-size: 15px; font-weight: 700; color: #6C5CE7;">256</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Screen -->
+      <div id="feedback" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('home-screen')">
+              <span class="nav-tab-icon">🏠</span>
+              <span>返回首页</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile')">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 32px;">
+          <div class="feedback-container">
+            <div class="score-overview">
+              <div class="score-label">总体评分</div>
+              <div class="score-value">8.5</div>
+              <div class="score-max">/ 10 分</div>
+            </div>
+
+            <div class="score-breakdown">
+              <div class="score-item">
+                <div class="score-icon">🧠</div>
+                <div class="score-name">逻辑性</div>
+                <div class="score-bar">
+                  <div class="score-fill" style="width: 85%;"></div>
+                </div>
+                <div class="score-number">8.5</div>
+              </div>
+
+              <div class="score-item">
+                <div class="score-icon">📚</div>
+                <div class="score-name">证据力</div>
+                <div class="score-bar">
+                  <div class="score-fill" style="width: 80%;"></div>
+                </div>
+                <div class="score-number">8.0</div>
+              </div>
+
+              <div class="score-item">
+                <div class="score-icon">🗣️</div>
+                <div class="score-name">表达力</div>
+                <div class="score-bar">
+                  <div class="score-fill" style="width: 90%;"></div>
+                </div>
+                <div class="score-number">9.0</div>
+              </div>
+
+              <div class="score-item">
+                <div class="score-icon">⚔️</div>
+                <div class="score-name">反驳力</div>
+                <div class="score-bar">
+                  <div class="score-fill" style="width: 85%;"></div>
+                </div>
+                <div class="score-number">8.5</div>
+              </div>
+
+              <div class="score-item">
+                <div class="score-icon">👁️</div>
+                <div class="score-name">多角度</div>
+                <div class="score-bar">
+                  <div class="score-fill" style="width: 80%;"></div>
+                </div>
+                <div class="score-number">8.0</div>
+              </div>
+            </div>
+
+            <div class="feedback-grid">
+              <div class="feedback-section">
+                <div class="feedback-title">✨ 亮点</div>
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-icon">🎯</div>
+                    <div class="feedback-label">论证有力</div>
+                  </div>
+                  <div class="feedback-text">
+                    你能够准确抓住算法推荐机制的核心问题，指出其利用心理弱点的设计逻辑，论证清晰有力。
+                  </div>
+                </div>
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-icon">💡</div>
+                    <div class="feedback-label">观点新颖</div>
+                  </div>
+                  <div class="feedback-text">
+                    从青少年自控能力发展阶段的角度进行分析，展现了独特的思考视角。
+                  </div>
+                </div>
+              </div>
+
+              <div class="feedback-section">
+                <div class="feedback-title">📈 改进建议</div>
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-icon">📊</div>
+                    <div class="feedback-label">增加数据支撑</div>
+                  </div>
+                  <div class="feedback-text">
+                    可以引用相关研究数据或案例来增强论点的说服力，比如青少年使用短视频的具体时长统计。
+                  </div>
+                </div>
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <div class="feedback-icon">🔄</div>
+                    <div class="feedback-label">多角度思考</div>
+                  </div>
+                  <div class="feedback-text">
+                    可以尝试从更多角度分析问题，比如考虑技术发展的必然性，或者探讨如何平衡创新与保护。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="button-group" style="margin-top: 40px;">
+              <button class="btn btn-secondary" onclick="showScreen('home-screen')">
+                <span>返回首页</span>
+              </button>
+              <button class="btn btn-primary" onclick="showScreen('debate')">
+                <span>再辩一次</span>
+                <span>🔄</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Screen -->
+      <div id="profile" class="screen">
+        <div class="top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>HappyLearning</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('home-screen')">
+              <span class="nav-tab-icon">🏠</span>
+              <span>返回首页</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar">👤</div>
+          </div>
+        </div>
+
+        <div class="content-container" style="padding-top: 32px;">
+          <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name">思辨小达人</div>
+            <div class="profile-level">Lv.3 进阶辩手</div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="profile-stat-card">
+              <div class="profile-stat-value">12</div>
+              <div class="profile-stat-label">完成辩论</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="profile-stat-value">8.5</div>
+              <div class="profile-stat-label">平均得分</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="profile-stat-value">7天</div>
+              <div class="profile-stat-label">连续打卡</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="profile-stat-value">Lv.3</div>
+              <div class="profile-stat-label">能力等级</div>
+            </div>
+          </div>
+
+          <div class="badges-section">
+            <div class="badges-title">🏆 成就徽章</div>
+            <div class="badges-grid">
+              <div class="badge-card">
+                <div class="badge-icon">🌟</div>
+                <div class="badge-name">初出茅庐</div>
+              </div>
+              <div class="badge-card">
+                <div class="badge-icon">🔥</div>
+                <div class="badge-name">连续7天</div>
+              </div>
+              <div class="badge-card">
+                <div class="badge-icon">⚡</div>
+                <div class="badge-name">逻辑大师</div>
+              </div>
+              <div class="badge-card locked">
+                <div class="badge-icon">👑</div>
+                <div class="badge-name">辩论之王</div>
+              </div>
+              <div class="badge-card locked">
+                <div class="badge-icon">💎</div>
+                <div class="badge-name">完美辩手</div>
+              </div>
+              <div class="badge-card locked">
+                <div class="badge-icon">🏅</div>
+                <div class="badge-name">百人斩</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function selectVote(element) {
+      document.querySelectorAll('.vote-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    function selectAngle(element) {
+      document.querySelectorAll('.angle-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    function selectDifficulty(element) {
+      document.querySelectorAll('.difficulty-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+  </script>
 </body>
 </html>
