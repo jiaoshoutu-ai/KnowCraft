@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HappyLearning - iPad端原型</title>
+  <title>KnowCraft - iPad端原型</title>
   <style>
     * {
       margin: 0;
@@ -795,6 +795,80 @@
       border-top: 2px solid #E9ECEF;
       display: flex;
       gap: 12px;
+      align-items: center;
+    }
+
+    .input-mode-toggle {
+      width: 48px;
+      height: 48px;
+      background: #F0EEFF;
+      border: none;
+      border-radius: 50%;
+      color: #6C5CE7;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .input-mode-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .text-input-mode {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .voice-input-mode {
+      flex: 1;
+      display: none;
+    }
+
+    .voice-input-mode.active {
+      display: block;
+    }
+
+    .text-input-mode.hidden {
+      display: none;
+    }
+
+    .voice-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .voice-btn:active {
+      transform: scale(0.98);
+    }
+
+    .voice-btn.recording {
+      background: linear-gradient(135deg, #E17055, #D63031);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
     }
 
     .input-field {
@@ -1196,7 +1270,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab active">
@@ -1318,7 +1392,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('home-screen')">
@@ -1417,7 +1491,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('topic-detail')">
@@ -1491,7 +1565,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('vote')">
@@ -1557,7 +1631,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('angle-select')">
@@ -1646,7 +1720,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('feedback')">
@@ -1698,8 +1772,19 @@
               </div>
 
               <div class="debate-input">
-                <input type="text" class="input-field" placeholder="输入你的观点...">
-                <button class="send-btn">➤</button>
+                <button class="input-mode-toggle" onclick="toggleInputMode()">
+                  <span class="mode-icon">🎤</span>
+                </button>
+                <div class="text-input-mode">
+                  <input type="text" class="input-field" placeholder="输入你的观点...">
+                  <button class="send-btn">➤</button>
+                </div>
+                <div class="voice-input-mode">
+                  <button class="voice-btn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()">
+                    <span>🎤</span>
+                    <span>按住说话</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1740,7 +1825,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('home-screen')">
@@ -1876,7 +1961,7 @@
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
-            <span>HappyLearning</span>
+            <span>KnowCraft</span>
           </div>
           <div class="nav-tabs">
             <div class="nav-tab" onclick="showScreen('home-screen')">
@@ -1981,6 +2066,36 @@
         card.classList.remove('selected');
       });
       element.classList.add('selected');
+    }
+
+    function toggleInputMode() {
+      const textMode = document.querySelector('.text-input-mode');
+      const voiceMode = document.querySelector('.voice-input-mode');
+      const toggleIcon = document.querySelector('.mode-icon');
+
+      if (textMode.style.display === 'none') {
+        textMode.style.display = 'flex';
+        voiceMode.style.display = 'none';
+        toggleIcon.textContent = '🎤';
+      } else {
+        textMode.style.display = 'none';
+        voiceMode.style.display = 'block';
+        toggleIcon.textContent = '⌨️';
+      }
+    }
+
+    function startRecording() {
+      const voiceBtn = document.querySelector('.voice-btn');
+      voiceBtn.classList.add('recording');
+      voiceBtn.querySelector('span:last-child').textContent = '松开结束';
+    }
+
+    function stopRecording() {
+      const voiceBtn = document.querySelector('.voice-btn');
+      voiceBtn.classList.remove('recording');
+      voiceBtn.querySelector('span:last-child').textContent = '按住说话';
+      // 模拟语音识别结果
+      alert('语音识别完成！已转换为文字。');
     }
   </script>
 </body>
