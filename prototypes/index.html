@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HappyLearning - 页面原型预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #2D3436;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      font-size: 42px;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      font-size: 18px;
+      margin-bottom: 48px;
+    }
+
+    .prototype-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .prototype-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .prototype-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    .prototype-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .prototype-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #6C5CE7;
+    }
+
+    .prototype-description {
+      font-size: 15px;
+      color: #636E72;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .prototype-specs {
+      background: #F8F9FA;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .spec-label {
+      color: #636E72;
+    }
+
+    .spec-value {
+      color: #2D3436;
+      font-weight: 600;
+    }
+
+    .prototype-button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .prototype-button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 16px rgba(108,92,231,0.4);
+    }
+
+    .info-section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      margin-bottom: 32px;
+    }
+
+    .info-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #6C5CE7;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .info-item {
+      padding: 16px;
+      background: #F8F9FA;
+      border-radius: 12px;
+      border-left: 4px solid #6C5CE7;
+    }
+
+    .info-item-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #2D3436;
+    }
+
+    .info-item-text {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚡ HappyLearning</h1>
+    <p class="subtitle">思辨能力学习平台 - 页面原型预览</p>
+
+    <div class="prototype-grid">
+      <!-- Mobile Prototype -->
+      <a href="mobile.html" class="prototype-card">
+        <div class="prototype-icon">📱</div>
+        <div class="prototype-title">手机端原型</div>
+        <div class="prototype-description">
+          针对 iPhone 等移动设备优化的界面设计，提供流畅的触控体验。
+        </div>
+        <div class="prototype-specs">
+          <div class="spec-item">
+            <span class="spec-label">设备宽度</span>
+            <span class="spec-value">390px</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">设备高度</span>
+            <span class="spec-value">844px</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">布局方式</span>
+            <span class="spec-value">单列滚动</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">导航方式</span>
+            <span class="spec-value">底部标签栏</span>
+          </div>
+        </div>
+        <button class="prototype-button">查看手机原型</button>
+      </a>
+
+      <!-- iPad Prototype -->
+      <a href="ipad.html" class="prototype-card">
+        <div class="prototype-icon">📟</div>
+        <div class="prototype-title">iPad 端原型</div>
+        <div class="prototype-description">
+          针对 iPad 平板设备优化的界面设计，充分利用大屏空间，支持横竖屏切换。
+        </div>
+        <div class="prototype-specs">
+          <div class="spec-item">
+            <span class="spec-label">竖屏宽度</span>
+            <span class="spec-value">1024px</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">横屏宽度</span>
+            <span class="spec-value">1366px</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">布局方式</span>
+            <span class="spec-value">双列网格</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">导航方式</span>
+            <span class="spec-value">顶部导航栏</span>
+          </div>
+        </div>
+        <button class="prototype-button">查看 iPad 原型</button>
+      </a>
+
+      <!-- Desktop Prototype -->
+      <a href="desktop.html" class="prototype-card">
+        <div class="prototype-icon">🖥️</div>
+        <div class="prototype-title">桌面端原型</div>
+        <div class="prototype-description">
+          针对 macOS 等桌面浏览器的全宽布局设计，侧边栏导航，最大化利用屏幕空间。
+        </div>
+        <div class="prototype-specs">
+          <div class="spec-item">
+            <span class="spec-label">最小宽度</span>
+            <span class="spec-value">1024px</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">推荐宽度</span>
+            <span class="spec-value">1440px+</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">布局方式</span>
+            <span class="spec-value">侧边栏+主内容</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">导航方式</span>
+            <span class="spec-value">侧边栏导航</span>
+          </div>
+        </div>
+        <button class="prototype-button">查看桌面原型</button>
+      </a>
+    </div>
+
+    <!-- Design Principles -->
+    <div class="info-section">
+      <div class="info-title">🎨 设计理念</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-title">响应式设计</div>
+          <div class="info-item-text">
+            根据设备屏幕尺寸自动调整布局，确保在任何设备上都有最佳体验。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">触控友好</div>
+          <div class="info-item-text">
+            移动端和平板设备采用大尺寸触控目标，符合人体工程学设计。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">视觉一致性</div>
+          <div class="info-item-text">
+            统一的设计语言、色彩系统和组件库，确保跨平台体验的一致性。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">性能优先</div>
+          <div class="info-item-text">
+            优化资源加载和渲染性能，确保流畅的用户体验。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Breakpoints -->
+    <div class="info-section">
+      <div class="info-title">📐 响应式断点</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-title">移动端 (&lt;768px)</div>
+          <div class="info-item-text">
+            全宽布局，单列显示，底部导航栏，优化触控操作。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">平板端 (768px-1024px)</div>
+          <div class="info-item-text">
+            双列网格布局，顶部导航栏，支持横竖屏切换。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">桌面端 (1024px-1440px)</div>
+          <div class="info-item-text">
+            侧边栏导航，三列卡片布局，更大的内容区域。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">超宽屏 (&gt;1440px)</div>
+          <div class="info-item-text">
+            四列卡片布局，更宽的内容区域，充分利用屏幕空间。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Instructions -->
+    <div class="info-section">
+      <div class="info-title">📖 使用说明</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-title">查看原型</div>
+          <div class="info-item-text">
+            点击上方卡片查看对应设备的原型设计。建议在对应设备上打开以获得最佳体验。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">浏览器测试</div>
+          <div class="info-item-text">
+            在 Chrome/Safari 开发者工具中切换设备模式，测试不同屏幕尺寸下的显示效果。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">设计参考</div>
+          <div class="info-item-text">
+            原型文件包含完整的 HTML/CSS 代码，可直接参考实现前端开发。
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-title">反馈建议</div>
+          <div class="info-item-text">
+            如有设计调整需求或改进建议，请及时沟通以便迭代优化。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>HappyLearning - 思辨能力学习平台 © 2024</p>
+    <p style="margin-top: 8px;">版本: v1.0 | 最后更新: 2024年1月</p>
+  </footer>
+</body>
+</html>
