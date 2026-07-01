@@ -1266,7 +1266,7 @@
   <div class="ipad-frame">
     <div class="screen-container">
       <!-- Home Screen -->
-      <div id="home-screen" class="screen active">
+      <div id="home-screen" class="screen">
         <div class="top-nav">
           <div class="logo">
             <span>⚡</span>
@@ -1383,6 +1383,60 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Screen -->
+      <div id="login" class="screen active">
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <div class="icons">
+            <span>📶</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <div style="padding: 80px 40px 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100% - 44px);">
+          <!-- Logo -->
+          <div style="text-align: center; margin-bottom: 60px;">
+            <div style="font-size: 80px; margin-bottom: 20px;">⚡</div>
+            <h1 style="font-size: 40px; font-weight: 800; color: #2D3436; margin-bottom: 12px;">KnowCraft</h1>
+            <p style="font-size: 18px; color: #636E72;">思辨能力训练平台</p>
+          </div>
+
+          <!-- Login Options -->
+          <div style="width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px;">
+            <!-- WeChat Login -->
+            <button onclick="showScreen('home-screen')" style="width: 100%; padding: 18px; background: #07C160; color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+              <span style="font-size: 22px;">💬</span>
+              <span>微信登录</span>
+            </button>
+
+            <!-- Apple ID Login -->
+            <button onclick="showScreen('home-screen')" style="width: 100%; padding: 18px; background: #000000; color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+              <span style="font-size: 22px;">🍎</span>
+              <span>Apple 登录</span>
+            </button>
+
+            <!-- Phone Number Login -->
+            <button onclick="showScreen('home-screen')" style="width: 100%; padding: 18px; background: white; color: #2D3436; border: 2px solid #E9ECEF; border-radius: 12px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+              <span style="font-size: 22px;">📱</span>
+              <span>手机号登录</span>
+            </button>
+          </div>
+
+          <!-- Terms -->
+          <p style="font-size: 14px; color: #B2BEC3; text-align: center; line-height: 1.6;">
+            登录即表示同意<br>
+            <span style="color: #6C5CE7; cursor: pointer;">《用户协议》</span>和<span style="color: #6C5CE7; cursor: pointer;">《隐私政策》</span>
+          </p>
+
+          <!-- Skip for demo -->
+          <div style="margin-top: 60px;">
+            <button onclick="showScreen('home-screen')" style="background: none; border: none; color: #B2BEC3; font-size: 15px; cursor: pointer; text-decoration: underline;">
+              跳过登录（演示模式）
+            </button>
           </div>
         </div>
       </div>
@@ -1712,40 +1766,83 @@
 
         <div class="content-container" style="padding-top: 40px;">
           <div class="vote-container">
-            <div class="vote-title">选择你的立场</div>
-            <div class="vote-subtitle">在辩论开始前，先看看大家的选择</div>
+            <div class="vote-title">选择辩题</div>
+            <div class="vote-subtitle">从以下辩题中选择一个，然后选择你的立场</div>
 
             <div class="vote-options">
-              <div class="vote-option" onclick="selectVote(this)">
-                <div class="vote-option-header">
-                  <div class="vote-radio"></div>
-                  <div class="vote-role">👨‍👩‍👧 家长代表</div>
+              <!-- Debate Topic 1 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 1)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.2s; background: white;">
+                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                  <div class="topic-radio" style="width: 28px; height: 28px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 18px; font-weight: 700; color: #2D3436; margin-bottom: 10px;">辩题 1</div>
+                    <div style="font-size: 17px; color: #2D3436; line-height: 1.6; margin-bottom: 10px;">短视频平台是否应该为青少年沉迷承担主要责任？</div>
+                    <div style="font-size: 14px; color: #636E72;">已有 1,234 人参与</div>
+                  </div>
                 </div>
-                <div class="vote-description">短视频平台应该承担主要责任，算法推荐机制诱导孩子沉迷，影响学习和身心健康。</div>
+                <div class="stance-options" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 15px; font-weight: 600; color: #636E72; margin-bottom: 16px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #1976D2; margin-bottom: 10px;">正方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">平台算法诱导沉迷，应担主责</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #D32F2F; margin-bottom: 10px;">反方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">技术中性，家长监管才是关键</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div class="vote-option" onclick="selectVote(this)">
-                <div class="vote-option-header">
-                  <div class="vote-radio"></div>
-                  <div class="vote-role">🏢 平台代表</div>
+              <!-- Debate Topic 2 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 2)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.2s; background: white;">
+                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                  <div class="topic-radio" style="width: 28px; height: 28px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 18px; font-weight: 700; color: #2D3436; margin-bottom: 10px;">辩题 2</div>
+                    <div style="font-size: 17px; color: #2D3436; line-height: 1.6; margin-bottom: 10px;">是否应该完全禁止未成年人使用短视频？</div>
+                    <div style="font-size: 14px; color: #636E72;">已有 987 人参与</div>
+                  </div>
                 </div>
-                <div class="vote-description">算法是技术中性的工具，关键在于用户如何使用。平台已提供青少年模式，家长应加强监管。</div>
+                <div class="stance-options" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 15px; font-weight: 600; color: #636E72; margin-bottom: 16px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #1976D2; margin-bottom: 10px;">正方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">禁止是保护未成年人的最有效手段</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #D32F2F; margin-bottom: 10px;">反方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">一刀切不现实，应培养自律能力</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div class="vote-option" onclick="selectVote(this)">
-                <div class="vote-option-header">
-                  <div class="vote-radio"></div>
-                  <div class="vote-role">🎓 学生代表</div>
+              <!-- Debate Topic 3 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 3)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.2s; background: white;">
+                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                  <div class="topic-radio" style="width: 28px; height: 28px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 18px; font-weight: 700; color: #2D3436; margin-bottom: 10px;">辩题 3</div>
+                    <div style="font-size: 17px; color: #2D3436; line-height: 1.6; margin-bottom: 10px;">青少年模式能否真正解决短视频沉迷问题？</div>
+                    <div style="font-size: 14px; color: #636E72;">已有 654 人参与</div>
+                  </div>
                 </div>
-                <div class="vote-description">短视频也有教育价值，不应一刀切禁止。学生需要学会自律，合理使用时间。</div>
-              </div>
-
-              <div class="vote-option" onclick="selectVote(this)">
-                <div class="vote-option-header">
-                  <div class="vote-radio"></div>
-                  <div class="vote-role">🏛️ 政府代表</div>
+                <div class="stance-options" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 15px; font-weight: 600; color: #636E72; margin-bottom: 16px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #1976D2; margin-bottom: 10px;">正方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">技术手段配合监管可以有效控制</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 14px; font-weight: 700; color: #D32F2F; margin-bottom: 10px;">反方</div>
+                      <div style="font-size: 15px; color: #2D3436; line-height: 1.5;">青少年模式形同虚设，技术解决不了人性问题</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="vote-description">需要建立完善的监管框架，平衡技术创新与青少年保护，制定行业标准。</div>
               </div>
             </div>
 
@@ -2188,6 +2285,37 @@
         option.classList.remove('selected');
       });
       element.classList.add('selected');
+    }
+
+    function selectTopic(element, topicId) {
+      // Collapse all other topics, expand selected
+      document.querySelectorAll('.debate-topic-card').forEach(card => {
+        const radio = card.querySelector('.topic-radio');
+        const stances = card.querySelector('.stance-options');
+        if (card !== element) {
+          card.style.borderColor = '#E9ECEF';
+          if (radio) { radio.style.background = 'transparent'; radio.style.borderColor = '#D5D8DC'; }
+          if (stances) stances.style.display = 'none';
+        }
+      });
+      // Expand selected topic
+      element.style.borderColor = '#6C5CE7';
+      const radio = element.querySelector('.topic-radio');
+      if (radio) { radio.style.background = '#6C5CE7'; radio.style.borderColor = '#6C5CE7'; }
+      const stances = element.querySelector('.stance-options');
+      if (stances) stances.style.display = 'block';
+    }
+
+    function selectStance(element) {
+      // Deselect all stance cards in the same topic
+      const parent = element.closest('.debate-topic-card');
+      parent.querySelectorAll('.stance-card').forEach(card => {
+        card.style.transform = 'scale(1)';
+        card.style.boxShadow = 'none';
+      });
+      // Select this stance
+      element.style.transform = 'scale(1.03)';
+      element.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
     }
 
     function selectAngle(element) {
