@@ -102,8 +102,8 @@ const DifficultySelect = {
   data() {
     return {
       topicId: '',
-      stanceIndex: 0,
-      angleIndex: 0,
+      debateTopicId: '',
+      userStance: '',
       selectedDifficulty: null,
       difficultyLevels: [
         {
@@ -142,20 +142,21 @@ const DifficultySelect = {
 
   mounted() {
     this.topicId = this.$route.params.topicId;
-    this.stanceIndex = parseInt(this.$route.params.stanceIndex);
-    this.angleIndex = parseInt(this.$route.params.angleIndex);
+    this.debateTopicId = this.$route.params.debateTopicId;
+    this.userStance = this.$route.params.userStance;
   },
 
   methods: {
     goBack() {
-      this.$router.push(`/angle/${this.topicId}/${this.stanceIndex}`);
+      this.$router.push(`/vote/${this.topicId}`);
     },
     selectDifficulty(index) {
       this.selectedDifficulty = index;
     },
     startDebate() {
       if (this.selectedDifficulty === null) return;
-      this.$router.push(`/debate/${this.topicId}/${this.stanceIndex}/${this.angleIndex}/${this.selectedDifficulty}`);
+      const difficultyName = this.difficultyLevels[this.selectedDifficulty].name;
+      this.$router.push(`/debate/${this.topicId}/${this.debateTopicId}/${this.userStance}/${difficultyName}`);
     }
   }
 }

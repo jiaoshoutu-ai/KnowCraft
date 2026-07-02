@@ -1,18 +1,20 @@
-from typing import Optional
-from models.debate import DebateSession
+from typing import Optional, TYPE_CHECKING
 
-_sessions: dict[str, DebateSession] = {}
+if TYPE_CHECKING:
+    from debate.one_vs_one import DebateSessionInMemory
+
+_sessions: dict[str, "DebateSessionInMemory"] = {}
 
 
-def create_session(session: DebateSession) -> None:
+def create_session(session: "DebateSessionInMemory") -> None:
     _sessions[session.session_id] = session
 
 
-def get_session(session_id: str) -> Optional[DebateSession]:
+def get_session(session_id: str) -> Optional["DebateSessionInMemory"]:
     return _sessions.get(session_id)
 
 
-def update_session(session: DebateSession) -> None:
+def update_session(session: "DebateSessionInMemory") -> None:
     _sessions[session.session_id] = session
 
 

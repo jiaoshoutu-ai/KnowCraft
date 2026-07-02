@@ -1,11 +1,24 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
 from api.topics import router as topics_router
 from api.websocket import router as ws_router
+from database import init_db
+# Import models to register them with SQLAlchemy
+import models.db_models
 
-app = FastAPI(title="HappyLearning", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialize database on startup."""
+    await init_db()
+    yield
+
+
+app = FastAPI(title="KnowCraft", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

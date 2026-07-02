@@ -110,9 +110,9 @@ const FeedbackPage = {
   data() {
     return {
       topicId: '',
-      stanceIndex: 0,
-      angleIndex: 0,
-      difficultyIndex: 0,
+      debateTopicId: '',
+      userStance: '',
+      difficulty: '',
       evaluation: {
         totalScore: 42,
         scores: [
@@ -120,7 +120,7 @@ const FeedbackPage = {
           { name: '证据力', icon: '📚', value: 9 },
           { name: '表达力', icon: '🗣️', value: 8 },
           { name: '反驳力', icon: '⚔️', value: 8 },
-          { name: '多角度', icon: '👁️', value: 9 }
+          { name: '批判性思维', icon: '👁️', value: 9 }
         ],
         strengths: [
           '论证逻辑清晰，因果关系明确，能够有效支撑观点',
@@ -148,9 +148,9 @@ const FeedbackPage = {
 
   mounted() {
     this.topicId = this.$route.params.topicId
-    this.stanceIndex = parseInt(this.$route.params.stanceIndex)
-    this.angleIndex = parseInt(this.$route.params.angleIndex)
-    this.difficultyIndex = parseInt(this.$route.params.difficultyIndex)
+    this.debateTopicId = this.$route.params.debateTopicId
+    this.userStance = this.$route.params.userStance
+    this.difficulty = this.$route.params.difficulty
   },
 
   methods: {

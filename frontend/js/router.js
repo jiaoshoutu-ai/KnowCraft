@@ -1,4 +1,4 @@
-// Vue Router 配置
+// Vue Router configuration
 const routes = [
   {
     path: '/',
@@ -13,24 +13,39 @@ const routes = [
     component: VotePage
   },
   {
-    path: '/angle/:topicId/:stanceIndex',
-    component: AngleSelect
-  },
-  {
-    path: '/difficulty/:topicId/:stanceIndex/:angleIndex',
-    component: DifficultySelect
-  },
-  {
-    path: '/debate/:topicId/:stanceIndex/:angleIndex/:difficultyIndex',
+    path: '/debate/:topicId/:debateTopicId/:userStance/:difficulty',
     component: DebatePage
   },
   {
-    path: '/feedback/:topicId/:stanceIndex/:angleIndex/:difficultyIndex',
+    path: '/feedback/:topicId/:debateTopicId/:userStance/:difficulty',
     component: FeedbackPage
   },
   {
     path: '/profile',
     component: ProfilePage
+  },
+  // Admin routes
+  {
+    path: '/admin',
+    component: AdminLayout,
+    children: [
+      {
+        path: '',
+        component: AdminDashboard
+      },
+      {
+        path: 'topics',
+        component: AdminTopicList
+      },
+      {
+        path: 'topics/create',
+        component: AdminTopicForm
+      },
+      {
+        path: 'topics/edit/:topicId',
+        component: AdminTopicForm
+      }
+    ]
   }
 ];
 

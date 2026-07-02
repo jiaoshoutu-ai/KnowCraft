@@ -11,9 +11,23 @@ class Settings(BaseSettings):
     app_port: int = 8000
     cors_origins: List[str] = ["*"]
 
-    # LLM
+    # Database
+    database_url: str = f"sqlite+aiosqlite:///{Path(__file__).parent / 'data' / 'knowcraft.db'}"
+
+    # LLM provider: "deepseek" | "qwen" | "mock"
+    llm_provider: str = "deepseek"
+
+    # DeepSeek
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-chat"
+    https_proxy: str = ""  # e.g., "http://127.0.0.1:7890"
+
+    # Qwen (DashScope) — kept for backward compatibility
     dashscope_api_key: str = ""
     llm_model: str = "qwen-plus"
+
+    # Shared LLM params
     llm_max_tokens: int = 500
     llm_temperature: float = 0.8
 

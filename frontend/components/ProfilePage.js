@@ -177,28 +177,28 @@ const ProfilePage = {
           { name: '证据力', icon: '📚', value: 8.5 },
           { name: '表达力', icon: '🗣️', value: 7.8 },
           { name: '反驳力', icon: '⚔️', value: 8.0 },
-          { name: '多角度', icon: '👁️', value: 8.3 }
+          { name: '批判性思维', icon: '👁️', value: 8.3 }
         ],
         recentDebates: [
           {
             icon: '📱',
-            title: '短视频算法正在"偷走"孩子的时间？',
+            title: '短视频平台是否应该为青少年沉迷承担主要责任？',
             date: '2024-01-15',
-            role: '家长代表',
+            role: '正方',
             score: 42
           },
           {
             icon: '🤖',
-            title: '学生用 AI 写作业，该不该禁止？',
+            title: '是否应该完全禁止未成年人使用短视频？',
             date: '2024-01-14',
-            role: '学生代表',
+            role: '反方',
             score: 45
           },
           {
             icon: '📵',
-            title: '学校禁止带手机，合理吗？',
+            title: '青少年模式能否真正解决短视频沉迷问题？',
             date: '2024-01-13',
-            role: '教师代表',
+            role: '正方',
             score: 38
           }
         ]

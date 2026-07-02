@@ -4,7 +4,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from core.session import create_session, get_session, update_session, delete_session
 from debate.one_vs_one import create_debate_session, generate_opponent_message, evaluate_debate
-from models.debate import DebateMessage
+from models.debate import DebateMessageCreate, Stance
 
 router = APIRouter()
 
@@ -30,19 +30,43 @@ async def debate_websocket(ws: WebSocket):
 
             if msg_type == "start":
                 topic_id = msg.get("topic_id")
-                perspective_id = msg.get("perspective_id")
-                if not topic_id or not perspective_id:
-                    await _send_error(ws, "Missing topic_id or perspective_id")
+                debate_topic_id = msg.get("debate_topic_id")
+                user_stance_str = msg.get("user_stance")
+
+                if not topic_id or not debate_topic_id or not user_stance_str:
+                    await _send_error(ws, "Missing topic_id, debate_topic_id, or user_stance")
                     continue
 
-                session = create_debate_session(topic_id, perspective_id)
+                # Validate stance
+                try:
+                    user_stance = Stance(user_stance_str)
+                except ValueError:
+                    await _send_error(ws, f"Invalid stance: {user_stance_str}. Must be 'pro' or 'con'")
+                    continue
+
+                try:
+                    session = await create_debate_session(topic_id, debate_topic_id, user_stance)
+                except ValueError as e:
+                    await _send_error(ws, str(e))
+                    continue
+
                 create_session(session)
 
                 # Send session created
                 await _send_json(ws, {
                     "type": "system",
                     "session_id": session.session_id,
-                    "data": {"event": "session_created", "max_rounds": session.max_rounds},
+                    "data": {
+                        "event": "session_created",
+                        "max_rounds": session.max_rounds,
+                        "user_stance": session.user_stance.value,
+                        "ai_stance": session.ai_stance.value,
+                        "debate_topic_title": session.debate_topic_title,
+                        "pro_stance_desc": session.pro_stance_desc,
+                        "con_stance_desc": session.con_stance_desc,
+                        "opponent_emoji": session.opponent_emoji,
+                        "opponent_name": session.opponent_name,
+                    },
                 })
 
                 # AI opening message (streamed)
@@ -50,7 +74,7 @@ async def debate_websocket(ws: WebSocket):
                 await _send_json(ws, {
                     "type": "ai_message",
                     "session_id": session.session_id,
-                    "data": {"speaker": "", "avatar": "", "content": "", "is_streaming": True},
+                    "data": {"content": "", "is_streaming": True},
                 })
                 async for chunk in generate_opponent_message(session, is_opening=True):
                     full_content += chunk
@@ -61,25 +85,19 @@ async def debate_websocket(ws: WebSocket):
                     })
 
                 # Send complete message
-                from api.topics import get_topic_by_id
-                topic = get_topic_by_id(session.topic_id)
-                perspective = topic.get_perspective(session.perspective_id)
                 await _send_json(ws, {
                     "type": "ai_message",
                     "session_id": session.session_id,
                     "data": {
-                        "speaker": perspective.name,
-                        "avatar": perspective.avatar,
                         "content": full_content,
                         "is_streaming": False,
                     },
                 })
 
                 # Update session
-                session.messages.append(DebateMessage(
-                    role=session.perspective_id,
-                    speaker=perspective.name,
-                    avatar=perspective.avatar,
+                session.messages.append(DebateMessageCreate(
+                    role="ai",
+                    stance=session.ai_stance,
                     content=full_content,
                 ))
                 session.phase = "debating"
@@ -107,8 +125,10 @@ async def debate_websocket(ws: WebSocket):
                     continue
 
                 # Record user message
-                session.messages.append(DebateMessage(
-                    role="user", speaker="学生", content=content,
+                session.messages.append(DebateMessageCreate(
+                    role="user",
+                    stance=session.user_stance,
+                    content=content,
                 ))
                 update_session(session)
 
@@ -117,7 +137,7 @@ async def debate_websocket(ws: WebSocket):
                 await _send_json(ws, {
                     "type": "ai_message",
                     "session_id": session.session_id,
-                    "data": {"speaker": "", "avatar": "", "content": "", "is_streaming": True},
+                    "data": {"content": "", "is_streaming": True},
                 })
                 async for chunk in generate_opponent_message(session):
                     full_content += chunk
@@ -127,25 +147,19 @@ async def debate_websocket(ws: WebSocket):
                         "data": {"content": chunk, "is_streaming": True},
                     })
 
-                from api.topics import get_topic_by_id
-                topic = get_topic_by_id(session.topic_id)
-                perspective = topic.get_perspective(session.perspective_id)
                 await _send_json(ws, {
                     "type": "ai_message",
                     "session_id": session.session_id,
                     "data": {
-                        "speaker": perspective.name,
-                        "avatar": perspective.avatar,
                         "content": full_content,
                         "is_streaming": False,
                     },
                 })
 
                 # Record AI message
-                session.messages.append(DebateMessage(
-                    role=session.perspective_id,
-                    speaker=perspective.name,
-                    avatar=perspective.avatar,
+                session.messages.append(DebateMessageCreate(
+                    role="ai",
+                    stance=session.ai_stance,
                     content=full_content,
                 ))
 
@@ -179,14 +193,13 @@ async def debate_websocket(ws: WebSocket):
 
                 # Run evaluation
                 evaluation = await evaluate_debate(session)
-                session.evaluation = evaluation
                 session.phase = "done"
                 update_session(session)
 
                 await _send_json(ws, {
                     "type": "evaluation",
                     "session_id": session.session_id,
-                    "data": evaluation.model_dump(),
+                    "data": evaluation,
                 })
 
                 delete_session(session.session_id)

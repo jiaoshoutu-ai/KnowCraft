@@ -1,110 +1,130 @@
-// 投票页面组件
+// Vote page - Select debate topic, stance, and difficulty (Desktop Layout)
 const VotePage = {
   template: `
-    <div class="phone-frame">
-      <div class="screen-container">
-        <!-- 状态栏 -->
-        <div class="status-bar">
-          <span class="time">9:41</span>
-          <div class="icons">
-            <span>📶</span>
-            <span>🔋</span>
-          </div>
+    <div class="vote-page">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div>
+          <div class="page-title">准备辩论</div>
+          <div class="page-subtitle">选择辩题、立场和难度</div>
         </div>
-
-        <!-- 导航栏 -->
-        <div class="nav-bar">
-          <div class="nav-back" @click="goBack">←</div>
-          <div class="nav-title">立场投票</div>
+        <div class="top-actions">
+          <button class="btn btn-secondary" @click="goBack">
+            <span>←</span>
+            <span>返回详情</span>
+          </button>
         </div>
+      </div>
 
-        <!-- 主内容区 -->
-        <div style="padding: 20px;">
-          <!-- 标题 -->
-          <div style="text-align: center; margin-bottom: 32px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">🗳️</div>
-            <h2 style="font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 12px;">
-              你的立场是？
-            </h2>
-            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-              选择一个你认同的观点，稍后将与 AI 进行辩论
-            </p>
+      <div class="content-container">
+        <div class="vote-container">
+          <!-- Loading state -->
+          <div v-if="loading" class="vote-state-center">
+            <div class="vote-state-icon">⏳</div>
+            <p class="vote-state-text">加载中...</p>
           </div>
 
-          <!-- 立场选项 -->
-          <div style="margin-bottom: 24px;">
-            <div v-for="(stance, index) in stances" :key="index"
-                 @click="selectStance(index)"
-                 :style="{
-                   background: selectedStance === index ? 'var(--primary-bg)' : 'var(--card)',
-                   border: selectedStance === index ? '2px solid var(--primary)' : '2px solid var(--border)',
-                   borderRadius: 'var(--radius)',
-                   padding: '20px',
-                   marginBottom: '12px',
-                   cursor: 'pointer',
-                   transition: 'all 0.2s',
-                   boxShadow: 'var(--shadow)'
-                 }">
+          <!-- Error state -->
+          <div v-else-if="error" class="vote-state-center">
+            <div class="vote-state-icon">❌</div>
+            <p class="vote-state-text vote-state-error">{{ error }}</p>
+            <button class="btn-primary" @click="goBack">返回重试</button>
+          </div>
 
-              <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <!-- 单选框 -->
-                <div :style="{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  border: selectedStance === index ? '6px solid var(--primary)' : '2px solid var(--border)',
-                  background: 'white',
-                  flexShrink: 0,
-                  marginTop: '2px',
-                  transition: 'all 0.2s'
-                }"></div>
+          <!-- Debate topics and difficulty -->
+          <div v-else>
+            <!-- Step 1: Debate topic cards -->
+            <div class="vote-section">
+              <h3 class="vote-section-title">选择辩题</h3>
+              <div class="vote-options">
+                <div v-for="(topic, index) in debateTopics" :key="topic.id"
+                     class="debate-topic-card"
+                     :class="{ 'is-selected': selectedTopic === index }"
+                     @click="selectTopic(index)">
 
-                <!-- 立场内容 -->
-                <div style="flex: 1;">
-                  <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
-                    {{ stance.role }}
+                  <!-- Card header -->
+                  <div class="debate-card-row">
+                    <div class="topic-radio" :class="{ active: selectedTopic === index }"></div>
+                    <div class="debate-card-body">
+                      <div class="debate-card-label">辩题 {{ index + 1 }}</div>
+                      <div class="debate-card-title">{{ topic.title }}</div>
+                      <div class="debate-card-count">已有 {{ formatCount(topic.participant_count) }} 人参与</div>
+                    </div>
                   </div>
-                  <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                    {{ stance.description }}
+
+                  <!-- Stance options (shown when card is selected) -->
+                  <div v-if="selectedTopic === index" class="stance-section">
+                    <div class="stance-label">选择你的立场：</div>
+                    <div class="stance-grid">
+                      <div class="stance-card pro"
+                           :class="{ active: selectedStance === 'pro' }"
+                           @click.stop="selectStance('pro')">
+                        <div class="stance-type">正方</div>
+                        <div class="stance-desc">{{ topic.pro_stance }}</div>
+                      </div>
+                      <div class="stance-card con"
+                           :class="{ active: selectedStance === 'con' }"
+                           @click.stop="selectStance('con')">
+                        <div class="stance-type">反方</div>
+                        <div class="stance-desc">{{ topic.con_stance }}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- 投票统计（投票后显示） -->
-          <div v-if="hasVoted" style="background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow);">
-            <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px;">
-              📊 投票统计
-            </h3>
+            <!-- Step 2: Difficulty selection (shown after stance is selected) -->
+            <div v-if="selectedStance" class="vote-section">
+              <h3 class="vote-section-title">选择难度</h3>
+              <div class="difficulty-options">
+                <div v-for="(level, index) in difficultyLevels" :key="index"
+                     class="difficulty-card"
+                     :class="{ 'is-selected': selectedDifficulty === index }"
+                     @click="selectDifficulty(index)">
 
-            <div v-for="(stat, index) in voteStats" :key="index" style="margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <span style="font-size: 13px; color: var(--text);">{{ stat.role }}</span>
-                <span style="font-size: 13px; font-weight: 700; color: var(--primary);">{{ stat.percentage }}%</span>
-              </div>
-              <div style="height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden;">
-                <div :style="{
-                  height: '100%',
-                  width: stat.percentage + '%',
-                  background: 'linear-gradient(90deg, var(--primary), #8B5CF6)',
-                  transition: 'width 0.8s ease'
-                }"></div>
+                  <div class="difficulty-card-header">
+                    <!-- Radio button -->
+                    <div class="topic-radio" :class="{ active: selectedDifficulty === index }"></div>
+
+                    <!-- Icon and basic info -->
+                    <div class="difficulty-icon">{{ level.icon }}</div>
+                    <div class="difficulty-info">
+                      <div class="difficulty-name">{{ level.name }}</div>
+                      <div class="difficulty-stars">{{ level.stars }}</div>
+                    </div>
+
+                    <!-- Expand button -->
+                    <button class="difficulty-expand-btn" @click.stop="toggleDescription(index)">
+                      {{ expandedDifficulty === index ? '收起' : '详情' }}
+                    </button>
+                  </div>
+
+                  <!-- Expandable description -->
+                  <div v-if="expandedDifficulty === index" class="difficulty-details">
+                    <p class="difficulty-description">{{ level.description }}</p>
+                    <div class="difficulty-tags">
+                      <span v-for="tag in level.tags" :key="tag" class="difficulty-tag">
+                        {{ tag }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <p style="font-size: 12px; color: var(--text-light); text-align: center; margin-top: 12px;">
-              共有 {{ totalVotes }} 人参与投票
-            </p>
+            <!-- Button group -->
+            <div class="button-group">
+              <button class="btn btn-secondary" @click="goBack">
+                返回
+              </button>
+              <button class="btn btn-primary"
+                      :disabled="!canStartDebate"
+                      @click="startDebate">
+                开始辩论 ⚔️
+              </button>
+            </div>
           </div>
-
-          <!-- 确认按钮 -->
-          <button class="btn-primary"
-                  :disabled="selectedStance === null"
-                  :style="{ opacity: selectedStance === null ? 0.5 : 1, cursor: selectedStance === null ? 'not-allowed' : 'pointer' }"
-                  @click="confirmVote">
-            {{ hasVoted ? '继续选择角度' : '确认投票' }}
-          </button>
         </div>
       </div>
     </div>
@@ -113,60 +133,100 @@ const VotePage = {
   data() {
     return {
       topicId: '',
+      loading: true,
+      error: null,
+      debateTopics: [],
+      selectedTopic: null,
       selectedStance: null,
-      hasVoted: false,
-      stances: [
+      selectedDifficulty: null,
+      expandedDifficulty: null,
+      difficultyLevels: [
         {
-          role: '👨‍👩‍👧 家长代表',
-          description: '短视频平台应该承担主要责任，算法推荐机制诱导孩子沉迷，影响学习和身心健康。'
+          name: '新手友好',
+          icon: '🌱',
+          stars: '⭐',
+          description: 'AI 温和回应，适合初学者。提供论点提示和脚手架帮助，让你逐步建立辩论信心。',
+          tags: ['温和回应', '论点提示', '脚手架帮助'],
+          color: '#00B894'
         },
         {
-          role: '🏢 平台代表',
-          description: '算法是技术中性的工具，关键在于用户如何使用。平台已提供青少年模式，家长应加强监管。'
+          name: '进阶挑战',
+          icon: '⚡',
+          stars: '⭐⭐⭐',
+          description: 'AI 有理有据地反驳，指出逻辑漏洞。适合有一定辩论经验的同学，提升思辨能力。',
+          tags: ['逻辑分析', '指出漏洞', '中等难度'],
+          color: '#6C5CE7'
         },
         {
-          role: '🎓 学生代表',
-          description: '短视频也有教育价值，不应一刀切禁止。学生需要学会自律，合理使用时间。'
-        },
-        {
-          role: '🏛️ 政府代表',
-          description: '需要建立完善的监管框架，平衡技术创新与青少年保护，制定行业标准。'
+          name: '高手对决',
+          icon: '🔥',
+          stars: '⭐⭐⭐⭐⭐',
+          description: 'AI 犀利质疑，多角度攻击。适合辩论高手，真正考验你的思辨能力和应变能力。',
+          tags: ['犀利质疑', '多角度攻击', '高难度'],
+          color: '#E17055'
         }
-      ],
-      voteStats: [
-        { role: '👨‍👩‍👧 家长代表', percentage: 45 },
-        { role: '🏢 平台代表', percentage: 15 },
-        { role: '🎓 学生代表', percentage: 25 },
-        { role: '🏛️ 政府代表', percentage: 15 }
-      ],
-      totalVotes: 1247
+      ]
     }
   },
 
-  mounted() {
-    this.topicId = this.$route.params.topicId;
+  computed: {
+    canStartDebate() {
+      return this.selectedTopic !== null && this.selectedStance !== null && this.selectedDifficulty !== null
+    }
+  },
+
+  async mounted() {
+    this.topicId = this.$route.params.topicId
+    await this.fetchTopic()
   },
 
   methods: {
-    goBack() {
-      this.$router.push(`/topic/${this.topicId}`);
-    },
-    selectStance(index) {
-      if (!this.hasVoted) {
-        this.selectedStance = index;
+    async fetchTopic() {
+      try {
+        const topic = await API.getTopic(this.topicId)
+        this.debateTopics = topic.debate_topics || []
+        this.loading = false
+      } catch (err) {
+        this.error = err.message
+        this.loading = false
       }
     },
-    confirmVote() {
-      if (this.selectedStance === null) return;
 
-      if (!this.hasVoted) {
-        this.hasVoted = true;
-        // 模拟投票统计更新
-        this.voteStats[this.selectedStance].percentage += 1;
+    goBack() {
+      this.$router.push(`/topic/${this.topicId}`)
+    },
+
+    selectTopic(index) {
+      if (this.selectedTopic === index) {
+        this.selectedTopic = null
+        this.selectedStance = null
       } else {
-        // 进入角度选择页面
-        this.$router.push(`/angle/${this.topicId}/${this.selectedStance}`);
+        this.selectedTopic = index
+        this.selectedStance = null
       }
+    },
+
+    selectStance(stance) {
+      this.selectedStance = stance
+    },
+
+    selectDifficulty(index) {
+      this.selectedDifficulty = index
+    },
+
+    toggleDescription(index) {
+      this.expandedDifficulty = this.expandedDifficulty === index ? null : index
+    },
+
+    startDebate() {
+      if (!this.canStartDebate) return
+      const debateTopic = this.debateTopics[this.selectedTopic]
+      const difficultyName = this.difficultyLevels[this.selectedDifficulty].name
+      this.$router.push(`/debate/${this.topicId}/${debateTopic.id}/${this.selectedStance}/${difficultyName}`)
+    },
+
+    formatCount(num) {
+      return num ? num.toLocaleString() : '0'
     }
   }
 }

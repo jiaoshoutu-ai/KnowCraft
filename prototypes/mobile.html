@@ -114,6 +114,95 @@
       flex: 1;
     }
 
+    .nav-title-subtitle {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: #636E72;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .nav-stance-toggle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(108,92,231,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .nav-stance-toggle:hover {
+      background: rgba(108,92,231,0.2);
+    }
+
+    .stance-popup {
+      position: absolute;
+      top: 100%;
+      right: 16px;
+      z-index: 100;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 12px;
+      min-width: 280px;
+      margin-top: 8px;
+    }
+
+    .stance-popup-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+
+    .stance-popup-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .stance-popup-row.pro {
+      background: #E3F2FD;
+    }
+
+    .stance-popup-row.con {
+      background: #FFEBEE;
+    }
+
+    .stance-popup-side {
+      font-weight: 700;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .stance-popup-row.pro .stance-popup-side {
+      color: #1976D2;
+    }
+
+    .stance-popup-row.con .stance-popup-side {
+      color: #D32F2F;
+    }
+
+    .stance-popup-desc {
+      flex: 1;
+      font-size: 11px;
+      color: #2D3436;
+      line-height: 1.4;
+    }
+
+    .stance-popup-who {
+      font-size: 10px;
+      font-weight: 600;
+      color: #636E72;
+      white-space: nowrap;
+    }
+
     /* Page Header */
     .header {
       background: white;
@@ -538,16 +627,25 @@
       line-height: 1.4;
     }
 
-    /* Difficulty Select */
-    .difficulty-container {
-      padding: 24px;
+    /* Difficulty Select (compact - inline with vote) */
+    .vote-section {
+      margin-bottom: 24px;
+    }
+
+    .vote-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 16px;
+      padding-left: 8px;
+      border-left: 4px solid #6C5CE7;
     }
 
     .difficulty-card {
       background: white;
       border: 2px solid #E9ECEF;
       border-radius: 16px;
-      padding: 20px;
+      padding: 16px;
       margin-bottom: 12px;
       cursor: pointer;
       transition: all 0.2s;
@@ -559,18 +657,17 @@
 
     .difficulty-card.selected {
       border-color: #6C5CE7;
-      background: #F0EEFF;
+      background: #faf8ff;
     }
 
-    .difficulty-header {
+    .difficulty-card-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
     }
 
     .difficulty-icon {
-      font-size: 32px;
+      font-size: 28px;
     }
 
     .difficulty-info {
@@ -578,28 +675,51 @@
     }
 
     .difficulty-name {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: #2D3436;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .difficulty-stars {
       color: #FDCB6E;
-      font-size: 14px;
+      font-size: 13px;
+    }
+
+    .difficulty-expand-btn {
+      background: transparent;
+      border: 1px solid #E9ECEF;
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #636E72;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .difficulty-details {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #E9ECEF;
+    }
+
+    .difficulty-details.expanded {
+      display: block;
+      animation: fadeIn 0.3s ease;
     }
 
     .difficulty-desc {
       font-size: 13px;
       color: #636E72;
       line-height: 1.5;
+      margin-bottom: 8px;
     }
 
     .difficulty-features {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
+      gap: 6px;
     }
 
     .feature-tag {
@@ -631,6 +751,132 @@
       font-size: 14px;
       font-weight: 700;
       color: #6C5CE7;
+    }
+
+    /* Debate Topic Info Card (Mobile) */
+    .debate-topic-info-card-mobile {
+      background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin: 12px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .debate-topic-info-card-mobile.expanded {
+      padding: 16px;
+    }
+
+    .debate-topic-toggle-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .debate-topic-toggle-left-mobile {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #636E72;
+    }
+
+    .debate-topic-toggle-icon-mobile {
+      font-size: 14px;
+      transition: transform 0.3s ease;
+      color: #6C5CE7;
+    }
+
+    .debate-topic-info-card-mobile.expanded .debate-topic-toggle-icon-mobile {
+      transform: rotate(180deg);
+    }
+
+    .debate-topic-details-mobile {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .debate-topic-info-card-mobile.expanded .debate-topic-details-mobile {
+      display: block;
+    }
+
+    .debate-topic-title-mobile {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2D3436;
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .debate-stance-display-mobile {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .stance-display-card-mobile {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stance-display-card-mobile.pro {
+      background: #E3F2FD;
+      border-color: #64B5F6;
+    }
+
+    .stance-display-card-mobile.con {
+      background: #FFEBEE;
+      border-color: #E57373;
+    }
+
+    .stance-display-header-mobile {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .stance-display-card-mobile.pro .stance-display-header-mobile {
+      color: #1976D2;
+    }
+
+    .stance-display-card-mobile.con .stance-display-header-mobile {
+      color: #D32F2F;
+    }
+
+    .stance-display-desc-mobile {
+      font-size: 12px;
+      color: #2D3436;
+      line-height: 1.4;
+      text-align: center;
+      flex: 1;
+    }
+
+    .stance-display-identity-mobile {
+      font-size: 11px;
+      color: #636E72;
+      text-align: center;
+      font-weight: 600;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .stance-vs-mobile {
+      font-size: 20px;
+      font-weight: 900;
+      color: #B2BEC3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .debate-messages {
@@ -1492,7 +1738,7 @@
         </div>
       </div>
 
-      <!-- Vote Screen -->
+      <!-- Vote Screen (merged with difficulty) -->
       <div id="vote" class="screen">
         <div class="status-bar">
           <span class="time">9:41</span>
@@ -1504,163 +1750,158 @@
 
         <div class="nav-bar">
           <div class="nav-back" onclick="showScreen('topic-detail')">←</div>
-          <div class="nav-title">选择辩题</div>
+          <div class="nav-title">准备辩论</div>
         </div>
 
-        <div class="vote-container">
-          <div class="vote-title">选择辩题</div>
-          <div class="vote-subtitle">从以下辩题中选择一个，然后选择你的立场</div>
+        <div class="vote-container" style="padding-bottom: 24px;">
+          <!-- Step 1: 选择辩题 -->
+          <div class="vote-section">
+            <div class="vote-section-title">选择辩题</div>
+            <div class="vote-options">
+              <!-- Debate Topic 1 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 1)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 1</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">短视频平台是否应该为青少年沉迷承担主要责任？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 1,234 人参与</div>
+                  </div>
+                </div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">平台算法诱导沉迷，应担主责</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术中性，家长监管才是关键</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <div class="vote-options">
-            <!-- Debate Topic 1 -->
-            <div class="debate-topic-card" onclick="selectTopic(this, 1)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
-              <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
-                <div style="flex: 1;">
-                  <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 1</div>
-                  <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">短视频平台是否应该为青少年沉迷承担主要责任？</div>
-                  <div style="font-size: 13px; color: #636E72;">已有 1,234 人参与</div>
-                </div>
-              </div>
-              <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
-                <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                  <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">平台算法诱导沉迷，应担主责</div>
-                  </div>
-                  <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术中性，家长监管才是关键</div>
+              <!-- Debate Topic 2 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 2)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 2</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">是否应该完全禁止未成年人使用短视频？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 987 人参与</div>
                   </div>
                 </div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">禁止是保护未成年人的最有效手段</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">一刀切不现实，应培养自律能力</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Debate Topic 2 -->
-            <div class="debate-topic-card" onclick="selectTopic(this, 2)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
-              <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
-                <div style="flex: 1;">
-                  <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 2</div>
-                  <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">是否应该完全禁止未成年人使用短视频？</div>
-                  <div style="font-size: 13px; color: #636E72;">已有 987 人参与</div>
-                </div>
-              </div>
-              <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
-                <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                  <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">禁止是保护未成年人的最有效手段</div>
-                  </div>
-                  <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">一刀切不现实，应培养自律能力</div>
+              <!-- Debate Topic 3 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 3)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 3</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">青少年模式能否真正解决短视频沉迷问题？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 654 人参与</div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <!-- Debate Topic 3 -->
-            <div class="debate-topic-card" onclick="selectTopic(this, 3)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
-              <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
-                <div style="flex: 1;">
-                  <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 3</div>
-                  <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">青少年模式能否真正解决短视频沉迷问题？</div>
-                  <div style="font-size: 13px; color: #636E72;">已有 654 人参与</div>
-                </div>
-              </div>
-              <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
-                <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                  <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术手段配合监管可以有效控制</div>
-                  </div>
-                  <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
-                    <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
-                    <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">青少年模式形同虚设，技术解决不了人性问题</div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术手段配合监管可以有效控制</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">青少年模式形同虚设，技术解决不了人性问题</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <button class="btn btn-primary" onclick="showScreen('difficulty')">确认并继续</button>
-        </div>
-      </div>
-
-      <!-- Difficulty Select Screen -->
-      <div id="difficulty" class="screen">
-        <div class="status-bar">
-          <span class="time">9:41</span>
-          <div class="icons">
-            <span>📶</span>
-            <span>🔋</span>
-          </div>
-        </div>
-
-        <div class="nav-bar">
-          <div class="nav-back" onclick="showScreen('vote')">←</div>
-          <div class="nav-title">选择难度</div>
-        </div>
-
-        <div class="difficulty-container">
-          <div style="text-align: center; margin-bottom: 24px;">
-            <div style="font-size: 20px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">选择辩论难度</div>
-            <div style="font-size: 14px; color: #636E72;">难度越高，AI 反驳越犀利</div>
-          </div>
-
-          <div class="difficulty-card" onclick="selectDifficulty(this)">
-            <div class="difficulty-header">
-              <div class="difficulty-icon">🌱</div>
-              <div class="difficulty-info">
-                <div class="difficulty-name">新手友好</div>
-                <div class="difficulty-stars">⭐</div>
+          <!-- Step 2: 选择难度（立场选完后显示） -->
+          <div class="vote-section" id="difficulty-section" style="display: none;">
+            <div class="vote-section-title">选择难度</div>
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">🌱</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">新手友好</div>
+                  <div class="difficulty-stars">⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 温和回应，适合初学者。提供论点提示和脚手架帮助。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💡 论点提示</span>
+                  <span class="feature-tag">🤝 温和反驳</span>
+                  <span class="feature-tag">📝 脚手架辅助</span>
+                </div>
               </div>
             </div>
-            <div class="difficulty-desc">AI 会温和回应，提供论点提示和引导，适合第一次辩论的同学。</div>
-            <div class="difficulty-features">
-              <span class="feature-tag">💡 论点提示</span>
-              <span class="feature-tag">🤝 温和反驳</span>
-              <span class="feature-tag">📝 脚手架辅助</span>
-            </div>
-          </div>
 
-          <div class="difficulty-card" onclick="selectDifficulty(this)">
-            <div class="difficulty-header">
-              <div class="difficulty-icon">⚡</div>
-              <div class="difficulty-info">
-                <div class="difficulty-name">进阶挑战</div>
-                <div class="difficulty-stars">⭐⭐⭐</div>
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">⚡</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">进阶挑战</div>
+                  <div class="difficulty-stars">⭐⭐⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 有理有据地反驳，指出逻辑漏洞。适合有一定辩论经验的同学。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">🔍 逻辑分析</span>
+                  <span class="feature-tag">🎯 针对性反驳</span>
+                </div>
               </div>
             </div>
-            <div class="difficulty-desc">AI 正常反驳，会指出你论证中的逻辑漏洞。有一定辩论基础的同学试试！</div>
-            <div class="difficulty-features">
-              <span class="feature-tag">🔍 逻辑分析</span>
-              <span class="feature-tag">🎯 针对性反驳</span>
-            </div>
-          </div>
 
-          <div class="difficulty-card" onclick="selectDifficulty(this)">
-            <div class="difficulty-header">
-              <div class="difficulty-icon">🔥</div>
-              <div class="difficulty-info">
-                <div class="difficulty-name">高手对决</div>
-                <div class="difficulty-stars">⭐⭐⭐⭐⭐</div>
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">🔥</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">高手对决</div>
+                  <div class="difficulty-stars">⭐⭐⭐⭐⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 犀利质疑，多角度攻击。适合辩论高手，真正考验思辨能力。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💥 犀利质疑</span>
+                  <span class="feature-tag">🧠 深度追问</span>
+                  <span class="feature-tag">⏱️ 快节奏</span>
+                </div>
               </div>
             </div>
-            <div class="difficulty-desc">AI 犀利质疑，不给喘息空间。深挖每个矛盾点，真正考验你的思辨力。</div>
-            <div class="difficulty-features">
-              <span class="feature-tag">💥 犀利质疑</span>
-              <span class="feature-tag">🧠 深度追问</span>
-              <span class="feature-tag">⏱️ 快节奏</span>
-            </div>
           </div>
 
-          <button class="btn btn-primary" onclick="showScreen('debate')">开始辩论</button>
+          <!-- 开始辩论按钮 -->
+          <div style="padding: 0 24px;">
+            <button class="btn btn-primary" onclick="showScreen('debate')">开始辩论 ⚔️</button>
+          </div>
         </div>
       </div>
 
@@ -1675,8 +1916,24 @@
         </div>
 
         <div class="nav-bar">
-          <div class="nav-back" onclick="showScreen('difficulty')">←</div>
-          <div class="nav-title">辩论进行中</div>
+          <div class="nav-back" onclick="showScreen('vote')">←</div>
+          <div class="nav-title">
+            <span>辩论进行中</span>
+            <span class="nav-title-subtitle">短视频平台是否应该为青少年沉迷承担主要责任？</span>
+          </div>
+          <span class="nav-stance-toggle" onclick="toggleStancePopup()" title="查看双方立场">👥</span>
+          <div class="stance-popup" id="stancePopup" style="display:none;">
+            <div class="stance-popup-row pro">
+              <span class="stance-popup-side">👍 正方</span>
+              <span class="stance-popup-desc">平台算法诱导沉迷，应担主责</span>
+              <span class="stance-popup-who">👤 你</span>
+            </div>
+            <div class="stance-popup-row con">
+              <span class="stance-popup-side">👎 反方</span>
+              <span class="stance-popup-desc">技术中性，家长监管才是关键</span>
+              <span class="stance-popup-who">🐟 网友·小鱼</span>
+            </div>
+          </div>
         </div>
 
         <div class="debate-container">
@@ -1685,23 +1942,25 @@
             <div style="font-size: 13px; color: #636E72;">⏱️ 02:30</div>
           </div>
 
+          <!-- Debate Topic Info Card removed - now shown via 👥 popup -->
+
           <div class="debate-messages">
             <div class="message ai">
-              <div class="message-role">🤖 AI · 平台代表</div>
+              <div class="message-role">🐟 网友·小鱼</div>
               <div class="message-bubble">
                 作为平台代表，我想说的是，我们的算法推荐机制本质上是中性的技术工具。它根据用户的兴趣偏好推荐内容，这是为了提升用户体验。如果青少年沉迷其中，更多是因为缺乏自律能力，而不是算法本身的问题。你认为呢？
               </div>
             </div>
 
             <div class="message user">
-              <div class="message-role">🎓 你 · 学生代表</div>
+              <div class="message-role">👤 你</div>
               <div class="message-bubble">
                 我理解平台想要提升用户体验的初衷，但算法推荐机制实际上是在利用人类的心理弱点。无限下拉、自动播放、个性化推荐，这些设计都是为了让用户"停不下来"。对于自控力还在发展中的青少年来说，这几乎是不可能抵抗的诱惑。
               </div>
             </div>
 
             <div class="message ai">
-              <div class="message-role">🤖 AI · 平台代表</div>
+              <div class="message-role">🐟 网友·小鱼</div>
               <div class="message-bubble">
                 你提到了"心理弱点"，但我想指出的是，我们同样提供了"青少年模式"、"使用时间提醒"等功能。问题在于，很多家长并没有开启这些功能，或者青少年自己关闭了它们。这是不是说明，监管的责任更多应该在家长身上？
               </div>
@@ -1975,6 +2234,10 @@
           card.style.borderColor = '#E9ECEF';
           if (radio) { radio.style.background = 'transparent'; radio.style.borderColor = '#D5D8DC'; }
           if (stances) stances.style.display = 'none';
+          card.querySelectorAll('.stance-card').forEach(sc => {
+            sc.style.transform = 'scale(1)';
+            sc.style.boxShadow = 'none';
+          });
         }
       });
       // Expand selected topic
@@ -1983,6 +2246,14 @@
       if (radio) { radio.style.background = '#6C5CE7'; radio.style.borderColor = '#6C5CE7'; }
       const stances = element.querySelector('.stance-options');
       if (stances) stances.style.display = 'block';
+      // Hide difficulty section (stance reset)
+      const diffSection = document.getElementById('difficulty-section');
+      if (diffSection) {
+        diffSection.style.display = 'none';
+        document.querySelectorAll('.difficulty-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.difficulty-details').forEach(d => d.classList.remove('expanded'));
+        document.querySelectorAll('.difficulty-expand-btn').forEach(b => b.textContent = '详情');
+      }
     }
 
     function selectStance(element) {
@@ -1995,6 +2266,8 @@
       // Select this stance
       element.style.transform = 'scale(1.03)';
       element.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
+      // Show difficulty section
+      document.getElementById('difficulty-section').style.display = 'block';
     }
 
     function selectAngle(element) {
@@ -2004,11 +2277,23 @@
       element.classList.add('selected');
     }
 
-    function selectDifficulty(element) {
+    function selectDifficultyCard(element) {
       document.querySelectorAll('.difficulty-card').forEach(card => {
         card.classList.remove('selected');
       });
       element.classList.add('selected');
+    }
+
+    function toggleDifficultyDetail(btn) {
+      const card = btn.closest('.difficulty-card');
+      const details = card.querySelector('.difficulty-details');
+      const isExpanded = details.classList.contains('expanded');
+      document.querySelectorAll('.difficulty-details').forEach(d => d.classList.remove('expanded'));
+      document.querySelectorAll('.difficulty-expand-btn').forEach(b => b.textContent = '详情');
+      if (!isExpanded) {
+        details.classList.add('expanded');
+        btn.textContent = '收起';
+      }
     }
 
     // 输入模式切换
@@ -2044,6 +2329,16 @@
       voiceBtn.innerHTML = '<span>🎤</span><span>按住说话</span>';
       // 这里可以添加实际的语音识别逻辑
       alert('语音录制完成！');
+    }
+
+    function toggleDebateTopic() {
+      const card = document.getElementById('debateTopicCard');
+      card.classList.toggle('expanded');
+    }
+
+    function toggleStancePopup() {
+      const popup = document.getElementById('stancePopup');
+      popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
     }
   </script>
 </body>
