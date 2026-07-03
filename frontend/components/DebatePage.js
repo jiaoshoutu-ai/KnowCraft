@@ -2,44 +2,6 @@
 const DebatePage = {
   template: `
     <div class="debate-page">
-      <!-- Desktop Sidebar -->
-      <div class="sidebar">
-        <div class="sidebar-logo">
-          <div class="logo">
-            <span>⚡</span>
-            <span>KnowCraft</span>
-          </div>
-        </div>
-        <div class="sidebar-nav">
-          <div class="nav-item" @click="goHome">
-            <span class="nav-item-icon">🏠</span>
-            <span>首页</span>
-          </div>
-          <div class="nav-item" @click="goToTopicLibrary">
-            <span class="nav-item-icon">📚</span>
-            <span>话题库</span>
-          </div>
-          <div class="nav-item" @click="goToProfile">
-            <span class="nav-item-icon">👤</span>
-            <span>个人中心</span>
-          </div>
-        </div>
-        <div class="sidebar-admin">
-          <div class="admin-label">管理后台</div>
-          <div class="nav-item" @click="goToAdmin">
-            <span class="nav-item-icon">📊</span>
-            <span>话题管理</span>
-          </div>
-        </div>
-        <div class="sidebar-user">
-          <div class="user-avatar">👨‍🎓</div>
-          <div class="user-info">
-            <div class="user-name">小明同学</div>
-            <div class="user-level">Lv.3 思辨小达人</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Top Bar -->
       <div class="top-bar">
         <div>
@@ -389,22 +351,6 @@ const DebatePage = {
       if (confirm('确定要退出辩论吗？进度将不会保存。')) {
         this.$router.push(`/vote/${this.topicId}`)
       }
-    },
-
-    goHome() {
-      this.$router.push('/')
-    },
-
-    goToTopicLibrary() {
-      this.$router.push('/topics')
-    },
-
-    goToProfile() {
-      this.$router.push('/profile')
-    },
-
-    goToAdmin() {
-      this.$router.push('/admin')
     },
 
     scrollToBottom() {
