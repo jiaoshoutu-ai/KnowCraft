@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KnowCraft - 手机端原型</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #F8F9FA;
+      border-radius: 48px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      border: 12px solid #2d2d44;
+      position: relative;
+    }
+
+    .screen-container {
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100%;
+      animation: slideIn 0.3s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .status-bar .time {
+      font-weight: 700;
+    }
+
+    .status-bar .icons {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    /* Navigation Bar */
+    .nav-bar {
+      background: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #E9ECEF;
+      position: sticky;
+      top: 44px;
+      z-index: 99;
+    }
+
+    .nav-back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F8F9FA;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .nav-title {
+      font-size: 17px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .nav-title-subtitle {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: #636E72;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .nav-stance-toggle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(108,92,231,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .nav-stance-toggle:hover {
+      background: rgba(108,92,231,0.2);
+    }
+
+    .stance-popup {
+      position: absolute;
+      top: 100%;
+      right: 16px;
+      z-index: 100;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 12px;
+      min-width: 280px;
+      margin-top: 8px;
+    }
+
+    .stance-popup-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+
+    .stance-popup-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .stance-popup-row.pro {
+      background: #E3F2FD;
+    }
+
+    .stance-popup-row.con {
+      background: #FFEBEE;
+    }
+
+    .stance-popup-side {
+      font-weight: 700;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .stance-popup-row.pro .stance-popup-side {
+      color: #1976D2;
+    }
+
+    .stance-popup-row.con .stance-popup-side {
+      color: #D32F2F;
+    }
+
+    .stance-popup-desc {
+      flex: 1;
+      font-size: 11px;
+      color: #2D3436;
+      line-height: 1.4;
+    }
+
+    .stance-popup-who {
+      font-size: 10px;
+      font-weight: 600;
+      color: #636E72;
+      white-space: nowrap;
+    }
+
+    /* Page Header */
+    .header {
+      background: white;
+      padding: 20px 24px;
+      border-bottom: 1px solid #E9ECEF;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #6C5CE7;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #636E72;
+    }
+
+    /* Stats Cards */
+    .stats-section {
+      padding: 20px 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #636E72;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #6C5CE7;
+    }
+
+    .stat-change {
+      font-size: 11px;
+      color: #00B894;
+      margin-top: 4px;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px 12px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .view-all {
+      font-size: 13px;
+      color: #6C5CE7;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Topic Cards */
+    .topics-list {
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .topic-card:active {
+      transform: scale(0.98);
+    }
+
+    .topic-thumbnail {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-button {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .topic-duration {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .topic-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #00B894;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .topic-info {
+      padding: 16px;
+    }
+
+    .topic-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .topic-description {
+      font-size: 14px;
+      color: #636E72;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .topic-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topic-tag-small {
+      background: #F0EEFF;
+      color: #6C5CE7;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .topic-stats {
+      margin-left: auto;
+      font-size: 12px;
+      color: #B2BEC3;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #E9ECEF;
+      display: flex;
+      padding: 12px 0;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .nav-icon {
+      font-size: 24px;
+      opacity: 0.5;
+    }
+
+    .nav-item.active .nav-icon {
+      opacity: 1;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #B2BEC3;
+    }
+
+    .nav-item.active .nav-label {
+      color: #6C5CE7;
+    }
+
+    /* Video Player */
+    .video-player {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 48px;
+      cursor: pointer;
+    }
+
+    .video-info {
+      padding: 20px 24px;
+      background: white;
+      margin-bottom: 12px;
+    }
+
+    .video-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .video-summary {
+      font-size: 14px;
+      color: #636E72;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .key-points {
+      background: #F0EEFF;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .key-points-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6C5CE7;
+      margin-bottom: 12px;
+    }
+
+    .key-points-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .key-point {
+      font-size: 13px;
+      color: #2D3436;
+      line-height: 1.5;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .key-point::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #6C5CE7;
+      font-weight: 700;
+    }
+
+    /* Vote Page */
+    .vote-container {
+      padding: 24px;
+    }
+
+    .vote-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D3436;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .vote-subtitle {
+      font-size: 14px;
+      color: #636E72;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .vote-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .vote-option {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vote-option:active {
+      transform: scale(0.98);
+    }
+
+    .vote-option.selected {
+      border-color: #6C5CE7;
+      background: #F0EEFF;
+    }
+
+    .vote-option-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .vote-radio {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #E9ECEF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vote-option.selected .vote-radio {
+      border-color: #6C5CE7;
+      background: #6C5CE7;
+    }
+
+    .vote-option.selected .vote-radio::after {
+      content: "✓";
+      color: white;
+      font-weight: 700;
+    }
+
+    .vote-role {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .vote-description {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    /* Angle Select */
+    .angle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 24px;
+    }
+
+    .angle-card {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .angle-card:active {
+      transform: scale(0.95);
+    }
+
+    .angle-card.selected {
+      border-color: #6C5CE7;
+      background: #F0EEFF;
+    }
+
+    .angle-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .angle-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 8px;
+    }
+
+    .angle-desc {
+      font-size: 12px;
+      color: #636E72;
+      line-height: 1.4;
+    }
+
+    /* Difficulty Select (compact - inline with vote) */
+    .vote-section {
+      margin-bottom: 24px;
+    }
+
+    .vote-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 16px;
+      padding-left: 8px;
+      border-left: 4px solid #6C5CE7;
+    }
+
+    .difficulty-card {
+      background: white;
+      border: 2px solid #E9ECEF;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .difficulty-card:active {
+      transform: scale(0.98);
+    }
+
+    .difficulty-card.selected {
+      border-color: #6C5CE7;
+      background: #faf8ff;
+    }
+
+    .difficulty-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .difficulty-icon {
+      font-size: 28px;
+    }
+
+    .difficulty-info {
+      flex: 1;
+    }
+
+    .difficulty-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 2px;
+    }
+
+    .difficulty-stars {
+      color: #FDCB6E;
+      font-size: 13px;
+    }
+
+    .difficulty-expand-btn {
+      background: transparent;
+      border: 1px solid #E9ECEF;
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #636E72;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .difficulty-details {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #E9ECEF;
+    }
+
+    .difficulty-details.expanded {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .difficulty-desc {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .difficulty-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .feature-tag {
+      background: #F8F9FA;
+      color: #636E72;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Debate Page */
+    .debate-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 100px);
+    }
+
+    .debate-header {
+      background: white;
+      padding: 16px 24px;
+      border-bottom: 1px solid #E9ECEF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .debate-round {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6C5CE7;
+    }
+
+    /* Debate Topic Info Card (Mobile) */
+    .debate-topic-info-card-mobile {
+      background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin: 12px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .debate-topic-info-card-mobile.expanded {
+      padding: 16px;
+    }
+
+    .debate-topic-toggle-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .debate-topic-toggle-left-mobile {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #636E72;
+    }
+
+    .debate-topic-toggle-icon-mobile {
+      font-size: 14px;
+      transition: transform 0.3s ease;
+      color: #6C5CE7;
+    }
+
+    .debate-topic-info-card-mobile.expanded .debate-topic-toggle-icon-mobile {
+      transform: rotate(180deg);
+    }
+
+    .debate-topic-details-mobile {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .debate-topic-info-card-mobile.expanded .debate-topic-details-mobile {
+      display: block;
+    }
+
+    .debate-topic-title-mobile {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2D3436;
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .debate-stance-display-mobile {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .stance-display-card-mobile {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stance-display-card-mobile.pro {
+      background: #E3F2FD;
+      border-color: #64B5F6;
+    }
+
+    .stance-display-card-mobile.con {
+      background: #FFEBEE;
+      border-color: #E57373;
+    }
+
+    .stance-display-header-mobile {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .stance-display-card-mobile.pro .stance-display-header-mobile {
+      color: #1976D2;
+    }
+
+    .stance-display-card-mobile.con .stance-display-header-mobile {
+      color: #D32F2F;
+    }
+
+    .stance-display-desc-mobile {
+      font-size: 12px;
+      color: #2D3436;
+      line-height: 1.4;
+      text-align: center;
+      flex: 1;
+    }
+
+    .stance-display-identity-mobile {
+      font-size: 11px;
+      color: #636E72;
+      text-align: center;
+      font-weight: 600;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .stance-vs-mobile {
+      font-size: 20px;
+      font-weight: 900;
+      color: #B2BEC3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .debate-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      max-width: 75%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.ai {
+      align-self: flex-start;
+    }
+
+    .message.user {
+      align-self: flex-end;
+    }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message.ai .message-bubble {
+      background: white;
+      color: #2D3436;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-bubble {
+      background: #6C5CE7;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-role {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #636E72;
+    }
+
+    .message.ai .message-role {
+      color: #6C5CE7;
+    }
+
+    .debate-input {
+      background: white;
+      padding: 16px 24px;
+      border-top: 1px solid #E9ECEF;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-mode-toggle {
+      width: 44px;
+      height: 44px;
+      background: #F0EEFF;
+      border: none;
+      border-radius: 50%;
+      color: #6C5CE7;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .input-mode-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .text-input-mode {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .voice-input-mode {
+      flex: 1;
+      display: none;
+    }
+
+    .voice-input-mode.active {
+      display: block;
+    }
+
+    .text-input-mode.hidden {
+      display: none;
+    }
+
+    .voice-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .voice-btn:active {
+      transform: scale(0.98);
+    }
+
+    .voice-btn.recording {
+      background: linear-gradient(135deg, #E17055, #D63031);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #E9ECEF;
+      border-radius: 24px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #6C5CE7;
+    }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      background: #6C5CE7;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Feedback Page */
+    .feedback-container {
+      padding: 24px;
+      padding-bottom: 100px;
+    }
+
+    .score-overview {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      border-radius: 20px;
+      padding: 24px;
+      color: white;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .score-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .score-value {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .score-max {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .score-breakdown {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .score-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 16px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .score-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .score-icon {
+      font-size: 24px;
+      width: 40px;
+      text-align: center;
+    }
+
+    .score-info {
+      flex: 1;
+    }
+
+    .score-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2D3436;
+      margin-bottom: 6px;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: #F8F9FA;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .score-number {
+      font-size: 17px;
+      font-weight: 700;
+      color: #6C5CE7;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .feedback-section {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .feedback-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #F8F9FA;
+    }
+
+    .feedback-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .feedback-icon {
+      font-size: 20px;
+    }
+
+    .feedback-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .feedback-text {
+      font-size: 13px;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      color: white;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #6C5CE7;
+      border: 2px solid #6C5CE7;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+      background: #F0EEFF;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      padding: 0 24px 24px;
+    }
+
+    .button-group .btn {
+      flex: 1;
+    }
+
+    /* Profile Page */
+    .profile-header {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      padding: 24px;
+      color: white;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 12px;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .profile-level {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: white;
+      margin: 0 24px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-top: -20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .profile-stat {
+      background: white;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .profile-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #6C5CE7;
+      margin-bottom: 4px;
+    }
+
+    .profile-stat-label {
+      font-size: 11px;
+      color: #636E72;
+    }
+
+    .badges-section {
+      padding: 24px;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .badge-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .badge-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .badge-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: #2D3436;
+    }
+
+    .badge-card.locked {
+      opacity: 0.3;
+    }
+
+    /* Responsive */
+    @media (max-width: 420px) {
+      body {
+        padding: 0;
+      }
+
+      .phone-frame {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+      }
+    }
+  </style>
+
+</head>
+<body>
+<div id="vote" class="screen">
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <div class="icons">
+            <span>📶</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <div class="nav-bar">
+          <div class="nav-back" onclick="showScreen('topic-detail')">←</div>
+          <div class="nav-title">准备辩论</div>
+        </div>
+
+        <div class="vote-container" style="padding-bottom: 24px;">
+          <!-- Step 1: 选择辩题 -->
+          <div class="vote-section">
+            <div class="vote-section-title">选择辩题</div>
+            <div class="vote-options">
+              <!-- Debate Topic 1 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 1)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 1</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">短视频平台是否应该为青少年沉迷承担主要责任？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 1,234 人参与</div>
+                  </div>
+                </div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">平台算法诱导沉迷，应担主责</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术中性，家长监管才是关键</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Debate Topic 2 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 2)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 2</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">是否应该完全禁止未成年人使用短视频？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 987 人参与</div>
+                  </div>
+                </div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">禁止是保护未成年人的最有效手段</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">一刀切不现实，应培养自律能力</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Debate Topic 3 -->
+              <div class="debate-topic-card" onclick="selectTopic(this, 3)" style="border: 2px solid #E9ECEF; border-radius: 16px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: all 0.2s;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 700; color: #2D3436; margin-bottom: 8px;">辩题 3</div>
+                    <div style="font-size: 15px; color: #2D3436; line-height: 1.6; margin-bottom: 8px;">青少年模式能否真正解决短视频沉迷问题？</div>
+                    <div style="font-size: 13px; color: #636E72;">已有 654 人参与</div>
+                  </div>
+                </div>
+                <div class="stance-options" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #F8F9FA;">
+                  <div style="font-size: 14px; font-weight: 600; color: #636E72; margin-bottom: 12px;">选择你的立场：</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="stance-card pro" onclick="event.stopPropagation(); selectStance(this)" style="background: #E3F2FD; border: 2px solid #64B5F6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #1976D2; margin-bottom: 8px;">正方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">技术手段配合监管可以有效控制</div>
+                    </div>
+                    <div class="stance-card con" onclick="event.stopPropagation(); selectStance(this)" style="background: #FFEBEE; border: 2px solid #E57373; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                      <div style="font-size: 13px; font-weight: 700; color: #D32F2F; margin-bottom: 8px;">反方</div>
+                      <div style="font-size: 14px; color: #2D3436; line-height: 1.5;">青少年模式形同虚设，技术解决不了人性问题</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: 选择难度（立场选完后显示） -->
+          <div class="vote-section" id="difficulty-section" style="display: none;">
+            <div class="vote-section-title">选择难度</div>
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">🌱</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">新手友好</div>
+                  <div class="difficulty-stars">⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 温和回应，适合初学者。提供论点提示和脚手架帮助。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💡 论点提示</span>
+                  <span class="feature-tag">🤝 温和反驳</span>
+                  <span class="feature-tag">📝 脚手架辅助</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">⚡</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">进阶挑战</div>
+                  <div class="difficulty-stars">⭐⭐⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 有理有据地反驳，指出逻辑漏洞。适合有一定辩论经验的同学。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">🔍 逻辑分析</span>
+                  <span class="feature-tag">🎯 针对性反驳</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="difficulty-card" onclick="selectDifficultyCard(this)">
+              <div class="difficulty-card-header">
+                <div class="topic-radio" style="width: 24px; height: 24px; border: 2px solid #D5D8DC; border-radius: 50%; flex-shrink: 0; transition: all 0.2s;"></div>
+                <div class="difficulty-icon">🔥</div>
+                <div class="difficulty-info">
+                  <div class="difficulty-name">高手对决</div>
+                  <div class="difficulty-stars">⭐⭐⭐⭐⭐</div>
+                </div>
+                <button class="difficulty-expand-btn" onclick="event.stopPropagation(); toggleDifficultyDetail(this)">详情</button>
+              </div>
+              <div class="difficulty-details">
+                <div class="difficulty-desc">AI 犀利质疑，多角度攻击。适合辩论高手，真正考验思辨能力。</div>
+                <div class="difficulty-features">
+                  <span class="feature-tag">💥 犀利质疑</span>
+                  <span class="feature-tag">🧠 深度追问</span>
+                  <span class="feature-tag">⏱️ 快节奏</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 开始辩论按钮 -->
+          <div style="padding: 0 24px;">
+            <button class="btn btn-primary" onclick="showScreen('debate')">开始辩论 ⚔️</button>
+          </div>
+        </div>
+      </div>
+
+<script>
+  // Navigation helper
+  function showScreen(screenId) {
+    console.log('Navigation to:', screenId);
+    // In standalone mode, navigation is logged only
+  }
+
+  // Auto-initialize if this is the active screen
+  document.addEventListener('DOMContentLoaded', function() {
+    const screen = document.querySelector('.screen');
+    if (screen) {
+      screen.classList.add('active');
+    }
+  });
+</script>
+</body>
+</html>

@@ -2,7 +2,15 @@
 const routes = [
   {
     path: '/',
+    component: LoginPage
+  },
+  {
+    path: '/home',
     component: HomePage
+  },
+  {
+    path: '/topic-library',
+    component: TopicLibrary
   },
   {
     path: '/topic/:id',

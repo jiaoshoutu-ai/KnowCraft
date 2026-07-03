@@ -1,0 +1,46 @@
+{
+  "generated": "2026-07-02T14:52:11.573Z",
+  "source": "prototypes/mobile.html",
+  "pages": [
+    {
+      "id": "home-screen",
+      "file": "home-screen.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "login",
+      "file": "login.html",
+      "isDefaultActive": true
+    },
+    {
+      "id": "topic-library",
+      "file": "topic-library.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "topic-detail",
+      "file": "topic-detail.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "vote",
+      "file": "vote.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "debate",
+      "file": "debate.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "feedback",
+      "file": "feedback.html",
+      "isDefaultActive": false
+    },
+    {
+      "id": "profile",
+      "file": "profile.html",
+      "isDefaultActive": false
+    }
+  ]
+}

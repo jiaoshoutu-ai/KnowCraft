@@ -1,15 +1,25 @@
-// 辩论对话页面组件 - 匹配桌面端原型设计
+// Debate page component - matches mobile prototype design
 const DebatePage = {
   template: `
-    <div class="debate-page">
-      <!-- Top Bar -->
-      <div class="top-bar">
-        <div>
-          <div class="page-title">辩论进行中</div>
-          <div class="page-subtitle">
-            <span class="subtitle-topic-text">{{ debateTopicTitle }}</span>
-            <span class="subtitle-stance-toggle" @click="showStancePopup = !showStancePopup" title="查看双方立场">👥</span>
+    <div class="phone-frame">
+      <div class="screen-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <div class="icons">
+            <span>📶</span>
+            <span>🔋</span>
           </div>
+        </div>
+
+        <!-- Nav Bar -->
+        <div class="nav-bar">
+          <div class="nav-back" @click="goBack">←</div>
+          <div class="nav-title">
+            <span>辩论进行中</span>
+            <span class="nav-title-subtitle">{{ debateTopicTitle }}</span>
+          </div>
+          <span class="nav-stance-toggle" @click="showStancePopup = !showStancePopup" title="查看双方立场">👥</span>
           <!-- Stance Popup -->
           <div v-show="showStancePopup" class="stance-popup">
             <div class="stance-popup-row pro">
@@ -24,61 +34,53 @@ const DebatePage = {
             </div>
           </div>
         </div>
-        <div class="top-actions">
-          <button class="btn btn-primary" @click="endDebate">
-            <span>⏭️</span>
-            <span>结束辩论</span>
-          </button>
-        </div>
-      </div>
 
-      <div class="content-container">
+        <!-- Debate Container -->
         <div class="debate-container">
-          <!-- Main Debate Area -->
-          <div class="debate-main">
-            <!-- Debate Header with Round and Timer -->
-            <div class="debate-header">
-              <div class="debate-round">第 {{ currentRound }}/{{ totalRounds }} 轮</div>
-              <div class="debate-timer">
-                <span>⏱️</span>
-                <span>{{ phaseNames[currentPhase] }}</span>
+          <!-- Debate Header -->
+          <div class="debate-header">
+            <div class="debate-round">第 {{ currentRound }}/{{ totalRounds }} 轮</div>
+            <div style="font-size: 13px; color: #636E72;">⏱️ {{ timerDisplay }}</div>
+          </div>
+
+          <!-- Messages Area -->
+          <div ref="messagesContainer" class="debate-messages">
+            <div v-for="(msg, index) in messages" :key="index"
+                 :class="['message', msg.type]">
+              <div v-if="msg.type !== 'system' && msg.type !== 'scaffold'" class="message-role">
+                {{ msg.type === 'user' ? '👤 你' : opponentEmoji + ' ' + opponentName }}
+              </div>
+              <div class="message-bubble">
+                <div v-if="msg.type === 'scaffold'" class="scaffold-content">
+                  <strong>💡 {{ msg.title }}</strong>
+                  <div>{{ msg.content }}</div>
+                </div>
+                <template v-else>
+                  {{ msg.content }}
+                  <span v-if="msg.streaming" class="streaming-cursor">▌</span>
+                </template>
               </div>
             </div>
 
-            <!-- Messages Area -->
-            <div ref="messagesContainer" class="debate-messages">
-              <div v-for="(msg, index) in messages" :key="index"
-                   :class="['message', msg.type]">
-                <div v-if="msg.type !== 'system' && msg.type !== 'scaffold'" class="message-role">
-                  {{ msg.type === 'user' ? '👤 你' : opponentEmoji + ' ' + opponentName }}
-                </div>
-                <div class="message-bubble">
-                  <div v-if="msg.type === 'scaffold'" class="scaffold-content">
-                    <strong>💡 {{ msg.title }}</strong>
-                    <div>{{ msg.content }}</div>
-                  </div>
-                  <template v-else>
-                    {{ msg.content }}
-                    <span v-if="msg.streaming" class="streaming-cursor">▌</span>
-                  </template>
-                </div>
-              </div>
-
-              <!-- AI Typing Indicator -->
-              <div v-if="isTyping" class="message ai">
-                <div class="message-role">{{ opponentEmoji }} {{ opponentName }}</div>
-                <div class="message-bubble">
-                  <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
+            <!-- AI Typing Indicator -->
+            <div v-if="isTyping" class="message ai">
+              <div class="message-role">{{ opponentEmoji }} {{ opponentName }}</div>
+              <div class="message-bubble">
+                <div class="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Input Area -->
-            <div class="debate-input">
+          <!-- Input Area -->
+          <div class="debate-input">
+            <button class="input-mode-toggle" @click="toggleInputMode">
+              <span class="mode-icon">{{ isVoiceMode ? '⌨️' : '🎤' }}</span>
+            </button>
+            <div class="text-input-mode" :class="{ hidden: isVoiceMode }">
               <input
                 v-model="userInput"
                 @keydown.enter.exact.prevent="sendMessage"
@@ -95,44 +97,18 @@ const DebatePage = {
                 ➤
               </button>
             </div>
-          </div>
-
-          <!-- Sidebar -->
-          <div class="debate-sidebar">
-            <!-- Quick Replies -->
-            <div v-if="showQuickReplies && quickReplies.length > 0" class="sidebar-card">
-              <div class="sidebar-title">💡 快速回复</div>
-              <div class="hint-list">
-                <div
-                  v-for="(reply, index) in quickReplies"
-                  :key="index"
-                  class="hint-item"
-                  @click="useQuickReply(reply)"
-                >
-                  {{ reply }}
-                </div>
-              </div>
-            </div>
-
-            <!-- Debate Stats -->
-            <div class="sidebar-card">
-              <div class="sidebar-title">📊 辩论数据</div>
-              <div class="data-row">
-                <span class="data-label">你的发言</span>
-                <span class="data-value">{{ userMessageCount }} 次</span>
-              </div>
-              <div class="data-row">
-                <span class="data-label">AI 发言</span>
-                <span class="data-value">{{ aiMessageCount }} 次</span>
-              </div>
-              <div class="data-row">
-                <span class="data-label">总字数</span>
-                <span class="data-value">{{ totalChars }}</span>
-              </div>
-              <div class="data-row">
-                <span class="data-label">当前回合</span>
-                <span class="data-value">{{ currentRound }}/{{ totalRounds }}</span>
-              </div>
+            <div class="voice-input-mode" :class="{ active: isVoiceMode }">
+              <button
+                class="voice-btn"
+                :class="{ recording: isRecording }"
+                @mousedown="startRecording"
+                @mouseup="stopRecording"
+                @touchstart="startRecording"
+                @touchend="stopRecording"
+              >
+                <span>🎤</span>
+                <span>{{ isRecording ? '松开结束录音' : '按住说话' }}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -147,22 +123,26 @@ const DebatePage = {
       userStance: '',
       difficulty: '',
       ws: null,
-      messages: [],
+      messages: [
+        {
+          type: 'ai',
+          content: '作为平台代表，我想说的是，我们的算法推荐机制本质上是中性的技术工具。它根据用户的兴趣偏好推荐内容，这是为了提升用户体验。如果青少年沉迷其中，更多是因为缺乏自律能力，而不是算法本身的问题。你认为呢？'
+        }
+      ],
       userInput: '',
       currentRound: 1,
       totalRounds: 5,
-      currentPhase: 0,
-      phases: [0, 1, 2],
-      phaseNames: ['开场交锋', '深入讨论', '最后冲刺'],
       isTyping: false,
       opponentEmoji: '🐟',
       opponentName: '网友·小鱼',
-      showQuickReplies: true,
-      quickReplies: ['我不同意，因为...', '你说得有道理，但是...', '换个角度想想...'],
-      debateTopicTitle: '加载中...',
-      proStanceDesc: '',
-      conStanceDesc: '',
-      showStancePopup: false
+      debateTopicTitle: '短视频平台是否应该为青少年沉迷承担主要责任？',
+      proStanceDesc: '平台算法诱导沉迷，应担主责',
+      conStanceDesc: '技术中性，家长监管才是关键',
+      showStancePopup: false,
+      isVoiceMode: false,
+      isRecording: false,
+      timerSeconds: 150,
+      timerInterval: null
     }
   },
 
@@ -170,14 +150,10 @@ const DebatePage = {
     canSend() {
       return this.userInput.trim() && !this.isTyping && this.ws && this.ws.readyState === WebSocket.OPEN
     },
-    userMessageCount() {
-      return this.messages.filter(m => m.type === 'user').length
-    },
-    aiMessageCount() {
-      return this.messages.filter(m => m.type === 'ai').length
-    },
-    totalChars() {
-      return this.messages.reduce((sum, m) => sum + (m.content?.length || 0), 0)
+    timerDisplay() {
+      const minutes = Math.floor(this.timerSeconds / 60)
+      const seconds = this.timerSeconds % 60
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
   },
 
@@ -188,11 +164,15 @@ const DebatePage = {
     this.difficulty = this.$route.params.difficulty
 
     this.connectWebSocket()
+    this.startTimer()
   },
 
   beforeUnmount() {
     if (this.ws) {
       this.ws.close()
+    }
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval)
     }
   },
 
@@ -202,7 +182,7 @@ const DebatePage = {
       this.ws = new WebSocket(wsUrl)
 
       this.ws.onopen = () => {
-        console.log('WebSocket 连接成功')
+        console.log('WebSocket connected')
         this.startDebate()
       }
 
@@ -212,15 +192,11 @@ const DebatePage = {
       }
 
       this.ws.onerror = (error) => {
-        console.error('WebSocket 错误:', error)
-        this.messages.push({
-          type: 'system',
-          content: '⚠️ 连接失败，请检查网络后重试'
-        })
+        console.log('WebSocket connection failed, using demo mode')
       }
 
       this.ws.onclose = () => {
-        console.log('WebSocket 连接关闭')
+        console.log('WebSocket connection closed')
       }
     },
 
@@ -233,6 +209,14 @@ const DebatePage = {
         difficulty: this.difficulty
       }
       this.ws.send(JSON.stringify(message))
+    },
+
+    startTimer() {
+      this.timerInterval = setInterval(() => {
+        if (this.timerSeconds > 0) {
+          this.timerSeconds--
+        }
+      }, 1000)
     },
 
     handleMessage(data) {
@@ -248,9 +232,7 @@ const DebatePage = {
             this.messages.push({
               type: 'ai',
               content: msgData.content,
-              streaming: true,
-              avatar: this.opponentAvatar,
-              role: this.opponentRole
+              streaming: true
             })
           }
         } else {
@@ -262,9 +244,7 @@ const DebatePage = {
             this.messages.push({
               type: 'ai',
               content: msgData.content,
-              streaming: false,
-              avatar: this.opponentAvatar,
-              role: this.opponentRole
+              streaming: false
             })
           }
         }
@@ -282,11 +262,12 @@ const DebatePage = {
           if (sysData.opponent_name) this.opponentName = sysData.opponent_name
           this.messages.push({
             type: 'system',
-            content: `开始讨论！你站${this.userStance === 'pro' ? '正方' : '反方'}`
+            content: `开始讨论！您站${this.userStance === 'pro' ? '正方' : '反方'}`
           })
+          this.timerSeconds = 150
         } else if (event === 'round_start') {
           this.currentRound = sysData.round
-          this.currentPhase = Math.min(this.currentRound - 1, this.phases.length - 1)
+          this.timerSeconds = 150
           this.messages.push({
             type: 'system',
             content: `第 ${this.currentRound} 轮开始`
@@ -335,9 +316,16 @@ const DebatePage = {
       this.scrollToBottom()
     },
 
-    useQuickReply(reply) {
-      this.userInput = reply
-      this.sendMessage()
+    toggleInputMode() {
+      this.isVoiceMode = !this.isVoiceMode
+    },
+
+    startRecording() {
+      this.isRecording = true
+    },
+
+    stopRecording() {
+      this.isRecording = false
     },
 
     endDebate() {

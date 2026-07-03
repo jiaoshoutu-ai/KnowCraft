@@ -1,9 +1,9 @@
-// 反馈评价页面组件
+// Feedback page component - matches prototype design
 const FeedbackPage = {
   template: `
     <div class="phone-frame">
       <div class="screen-container">
-        <!-- 状态栏 -->
+        <!-- Status bar -->
         <div class="status-bar">
           <span class="time">9:41</span>
           <div class="icons">
@@ -12,96 +12,66 @@ const FeedbackPage = {
           </div>
         </div>
 
-        <!-- 导航栏 -->
+        <!-- Navigation bar -->
         <div class="nav-bar">
           <div class="nav-back" @click="goHome">←</div>
           <div class="nav-title">辩论评价</div>
         </div>
 
-        <!-- 主内容区 -->
-        <div style="padding: 20px;">
-          <!-- 总体评价卡片 -->
-          <div style="background: linear-gradient(135deg, var(--primary), #8B5CF6); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; color: white; text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
-            <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">辩论完成！</div>
-            <div style="font-size: 64px; font-weight: 800; margin-bottom: 8px;">{{ evaluation.totalScore }}</div>
-            <div style="font-size: 14px; opacity: 0.9;">总分（满分 50 分）</div>
+        <!-- Main content area -->
+        <div class="feedback-container">
+          <!-- Overall score card -->
+          <div class="score-overview">
+            <div class="score-label">总体评分</div>
+            <div class="score-value">{{ evaluation.totalScore }}</div>
+            <div class="score-max">/ 10 分</div>
           </div>
 
-          <!-- 五维度评分 -->
-          <div style="background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow);">
-            <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 20px;">
-              📊 能力评估
-            </h3>
+          <!-- Dimension scores breakdown -->
+          <div class="score-breakdown">
+            <div class="score-title">📊 能力维度评分</div>
 
-            <div v-for="(score, index) in evaluation.scores" :key="index" style="margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 20px;">{{ score.icon }}</span>
-                  <span style="font-size: 14px; font-weight: 600; color: var(--text);">{{ score.name }}</span>
-                </div>
-                <div style="font-size: 18px; font-weight: 700; color: var(--primary);">
-                  {{ score.value }}/10
+            <div v-for="(score, index) in evaluation.scores" :key="index" class="score-item">
+              <div class="score-icon">{{ score.icon }}</div>
+              <div class="score-info">
+                <div class="score-name">{{ score.name }}</div>
+                <div class="score-bar">
+                  <div class="score-fill" :style="{ width: (score.value * 10) + '%' }"></div>
                 </div>
               </div>
-              <div style="height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden;">
-                <div :style="{
-                  height: '100%',
-                  width: (score.value * 10) + '%',
-                  background: 'linear-gradient(90deg, var(--primary), #8B5CF6)',
-                  transition: 'width 1s ease',
-                  borderRadius: '4px'
-                }"></div>
+              <div class="score-number">{{ score.value.toFixed(1) }}</div>
+            </div>
+          </div>
+
+          <!-- Strengths section -->
+          <div class="feedback-section">
+            <div class="score-title">✨ 亮点</div>
+            <div v-for="(strength, index) in evaluation.strengths" :key="'s' + index" class="feedback-item">
+              <div class="feedback-header">
+                <div class="feedback-icon">{{ strength.icon }}</div>
+                <div class="feedback-label">{{ strength.label }}</div>
               </div>
+              <div class="feedback-text">{{ strength.text }}</div>
             </div>
           </div>
 
-          <!-- 优点 -->
-          <div style="background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow);">
-            <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px;">
-              ✨ 你的亮点
-            </h3>
-            <div v-for="(strength, index) in evaluation.strengths" :key="index"
-                 style="background: #F0FFF4; border-left: 4px solid var(--accent); padding: 12px; margin-bottom: 12px; border-radius: var(--radius-sm);">
-              <div style="font-size: 14px; color: var(--text); line-height: 1.6;">
-                {{ strength }}
+          <!-- Suggestions section -->
+          <div class="feedback-section">
+            <div class="score-title">📈 改进建议</div>
+            <div v-for="(suggestion, index) in evaluation.suggestions" :key="'g' + index" class="feedback-item">
+              <div class="feedback-header">
+                <div class="feedback-icon">{{ suggestion.icon }}</div>
+                <div class="feedback-label">{{ suggestion.label }}</div>
               </div>
+              <div class="feedback-text">{{ suggestion.text }}</div>
             </div>
           </div>
+        </div>
 
-          <!-- 改进建议 -->
-          <div style="background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow);">
-            <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px;">
-              💡 改进建议
-            </h3>
-            <div v-for="(suggestion, index) in evaluation.suggestions" :key="index"
-                 style="background: #FFF9E6; border-left: 4px solid var(--warning); padding: 12px; margin-bottom: 12px; border-radius: var(--radius-sm);">
-              <div style="font-size: 14px; color: var(--text); line-height: 1.6;">
-                {{ suggestion }}
-              </div>
-            </div>
-          </div>
-
-          <!-- 精彩时刻 -->
-          <div style="background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow);">
-            <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px;">
-              🌟 精彩时刻
-            </h3>
-            <div v-for="(moment, index) in evaluation.highlights" :key="index" class="highlight-moment">
-              <div class="hm-title">{{ moment.title }}</div>
-              <p>{{ moment.content }}</p>
-            </div>
-          </div>
-
-          <!-- 操作按钮 -->
-          <div style="display: flex; gap: 12px; margin-top: 24px;">
-            <button class="btn-secondary" @click="goHome">
-              返回首页
-            </button>
-            <button class="btn-primary" @click="goProfile" style="flex: 1;">
-              查看我的档案
-            </button>
-          </div>
+        <!-- Action buttons -->
+        <div class="button-group">
+          <button class="btn btn-secondary" @click="goHome">返回首页</button>
+          <button class="btn btn-primary" @click="debateAgain">再辩一次</button>
         </div>
       </div>
     </div>
@@ -114,32 +84,36 @@ const FeedbackPage = {
       userStance: '',
       difficulty: '',
       evaluation: {
-        totalScore: 42,
+        totalScore: 8.5,
         scores: [
-          { name: '逻辑性', icon: '🧠', value: 8 },
-          { name: '证据力', icon: '📚', value: 9 },
-          { name: '表达力', icon: '🗣️', value: 8 },
-          { name: '反驳力', icon: '⚔️', value: 8 },
-          { name: '批判性思维', icon: '👁️', value: 9 }
+          { name: '逻辑性', icon: '🧠', value: 8.5 },
+          { name: '证据力', icon: '📚', value: 8.0 },
+          { name: '表达力', icon: '🗣️', value: 9.0 },
+          { name: '反驳力', icon: '⚔️', value: 8.5 },
+          { name: '多角度', icon: '👁️', value: 8.0 }
         ],
         strengths: [
-          '论证逻辑清晰，因果关系明确，能够有效支撑观点',
-          '引用了具体的数据和案例，增强了说服力',
-          '语言表达流畅，用词准确，表达有条理'
-        ],
-        suggestions: [
-          '可以尝试引入更多角度的论据，丰富论证层次',
-          '在反驳对方观点时，可以先承认其合理性，再进行反驳',
-          '建议多关注相关领域的最新动态，积累更多素材'
-        ],
-        highlights: [
           {
-            title: '有力的数据支撑',
-            content: '你提到"根据某调查显示，70%的青少年每天使用短视频超过2小时"，这个数据引用非常有力，直接支撑了你的核心论点。'
+            icon: '🎯',
+            label: '论证有力',
+            text: '你能够准确抓住算法推荐机制的核心问题，指出其利用心理弱点的设计逻辑，论证清晰有力。'
           },
           {
-            title: '巧妙的类比',
-            content: '你将短视频算法比作"数字糖果"，这个类比形象生动，帮助听众更好地理解算法的本质。'
+            icon: '💡',
+            label: '观点新颖',
+            text: '从青少年自控能力发展阶段的角度进行分析，展现了独特的思考视角。'
+          }
+        ],
+        suggestions: [
+          {
+            icon: '📊',
+            label: '增加数据支撑',
+            text: '可以引用相关研究数据或案例来增强论点的说服力，比如青少年使用短视频的具体时长统计。'
+          },
+          {
+            icon: '🔄',
+            label: '多角度思考',
+            text: '可以尝试从更多角度分析问题，比如考虑技术发展的必然性，或者探讨如何平衡创新与保护。'
           }
         ]
       }
@@ -155,10 +129,17 @@ const FeedbackPage = {
 
   methods: {
     goHome() {
-      this.$router.push('/')
+      this.$router.push('/home')
     },
-    goProfile() {
-      this.$router.push('/profile')
+    debateAgain() {
+      // Navigate back to vote page with same topic for another debate
+      this.$router.push({
+        path: '/vote',
+        params: {
+          topicId: this.topicId,
+          debateTopicId: this.debateTopicId
+        }
+      })
     }
   }
 }
