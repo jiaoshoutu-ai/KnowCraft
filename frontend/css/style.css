@@ -2037,6 +2037,134 @@ body {
   }
 }
 
+/* ===== Debate Page - iPad Styles (769px+) ===== */
+@media (min-width: 769px) {
+  /* Hide mobile elements on iPad */
+  .debate-page .status-bar,
+  .debate-page .nav-bar {
+    display: none !important;
+  }
+
+  /* Show iPad elements */
+  .debate-page .ipad-top-nav {
+    display: flex !important;
+  }
+
+  .debate-page .debate-topic-bar {
+    display: flex !important;
+  }
+
+  /* iPad top nav */
+  .debate-page .ipad-top-nav {
+    background: white;
+    padding: 20px 40px;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .debate-page .ipad-top-nav .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .debate-page .ipad-top-nav .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .debate-page .ipad-top-nav .nav-tab {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .debate-page .ipad-top-nav .nav-tab:hover {
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  .debate-page .ipad-top-nav .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 20px;
+    border-left: 2px solid var(--border);
+  }
+
+  .debate-page .ipad-top-nav .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: #FFF4E6;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #E67E22;
+  }
+
+  .debate-page .ipad-top-nav .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* Debate topic bar (iPad only) */
+  .debate-page .debate-topic-bar {
+    background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin: 16px 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+
+  .debate-page .debate-topic-bar > span:first-child {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Adjust debate container height for iPad */
+  .debate-page .debate-container {
+    height: calc(100vh - 140px);
+  }
+
+  .debate-page .debate-messages {
+    padding: 24px 32px;
+    gap: 20px;
+  }
+
+  .debate-page .debate-input {
+    padding: 20px 32px;
+  }
+}
+
 @media (max-width: 768px) {
   .debate-page .content-container {
     padding: 0;
@@ -4205,6 +4333,7 @@ body {
 
 .login-options {
   width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -4272,7 +4401,62 @@ body {
 }
 
 /* ============================================
-   Topic Library Page
+   Login Page - iPad Styles (769px+)
+   ============================================ */
+@media (min-width: 769px) {
+  .login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-content {
+    padding: 80px 40px 40px;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .login-logo-icon {
+    font-size: 80px;
+  }
+
+  .login-title {
+    font-size: 40px;
+  }
+
+  .login-subtitle {
+    font-size: 18px;
+  }
+
+  .login-logo {
+    margin-bottom: 60px;
+  }
+
+  .login-options {
+    max-width: 500px;
+    gap: 16px;
+  }
+
+  .login-btn {
+    padding: 18px;
+    font-size: 17px;
+  }
+
+  .login-btn-icon {
+    font-size: 22px;
+  }
+
+  .login-terms {
+    font-size: 14px;
+  }
+
+  .login-skip-btn {
+    font-size: 15px;
+  }
+}
+
+/* ============================================
+   Topic Library Page - Mobile Styles
    ============================================ */
 .topic-library-page {
   min-height: 100vh;
@@ -4280,7 +4464,16 @@ body {
   position: relative;
 }
 
-.topic-library-search {
+.topic-library-page .ipad-top-nav,
+.topic-library-page .ipad-page-header {
+  display: none !important;
+}
+
+.topic-library-content {
+  padding-bottom: 120px;
+}
+
+.topic-library-search-card {
   padding: 16px 24px;
 }
 
@@ -4306,6 +4499,10 @@ body {
   font-size: 14px;
   flex: 1;
   background: transparent;
+}
+
+.filter-btn {
+  display: none;
 }
 
 .topic-library-filters {
@@ -4344,8 +4541,348 @@ body {
 }
 
 .topic-library-list {
-  padding: 0 24px 120px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+
+/* ============================================
+   Topic Library Page - iPad Styles (769px-1024px)
+   ============================================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .topic-library-page {
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  /* Show iPad nav elements, hide mobile ones */
+  .topic-library-page .ipad-top-nav,
+  .topic-library-page .ipad-page-header {
+    display: flex !important;
+  }
+
+  .topic-library-page .status-bar,
+  .topic-library-page .nav-bar,
+  .topic-library-page .bottom-nav {
+    display: none !important;
+  }
+
+  /* iPad Top Nav */
+  .topic-library-page .ipad-top-nav {
+    background: white;
+    padding: 20px 40px;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topic-library-page .ipad-top-nav .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .topic-library-page .ipad-top-nav .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .topic-library-page .ipad-top-nav .nav-tab {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .topic-library-page .ipad-top-nav .nav-tab:hover {
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  .topic-library-page .ipad-top-nav .nav-tab.active {
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  .topic-library-page .ipad-top-nav .nav-tab-icon {
+    font-size: 18px;
+  }
+
+  .topic-library-page .ipad-top-nav .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 20px;
+    border-left: 2px solid var(--border);
+  }
+
+  .topic-library-page .ipad-top-nav .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: #FFF4E6;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #E67E22;
+  }
+
+  .topic-library-page .ipad-top-nav .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* iPad Page Header */
+  .topic-library-page .ipad-page-header {
+    background: white;
+    padding: 32px 40px;
+    margin-bottom: 24px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .topic-library-page .ipad-page-header .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .topic-library-page .ipad-page-header .page-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+
+  /* Content area */
+  .topic-library-page .topic-library-content {
+    padding: 0 40px 40px;
+  }
+
+  /* Search card */
+  .topic-library-page .topic-library-search-card {
+    display: flex;
+    gap: 12px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  .topic-library-page .topic-library-search-card .search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 16px;
+    gap: 8px;
+  }
+
+  .topic-library-page .topic-library-search-card .search-icon {
+    font-size: 18px;
+    color: var(--text-light);
+  }
+
+  .topic-library-page .topic-library-search-card .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background: transparent;
+  }
+
+  .topic-library-page .topic-library-search-card .filter-btn {
+    padding: 12px 24px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .topic-library-page .topic-library-search-card .filter-btn:hover {
+    background: var(--primary-light);
+  }
+
+  /* Filters */
+  .topic-library-page .topic-library-filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .topic-library-page .filter-tag {
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .topic-library-page .filter-tag:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .topic-library-page .filter-tag.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  /* Topic count */
+  .topic-library-page .topic-library-count {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .topic-library-page .topic-library-count .count-number {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  /* 3-column grid layout for iPad */
+  .topic-library-page .topic-library-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .topic-library-page .topic-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .topic-library-page .topic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .topic-library-page .topic-thumbnail {
+    height: 240px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topic-library-page .play-button {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .topic-library-page .topic-duration {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .topic-library-page .topic-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--accent);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .topic-library-page .topic-info {
+    padding: 24px;
+  }
+
+  .topic-library-page .topic-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .topic-library-page .topic-description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .topic-library-page .topic-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .topic-library-page .topic-tag-small {
+    background: var(--primary-bg);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .topic-library-page .topic-stats {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+

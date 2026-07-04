@@ -1,9 +1,8 @@
 // Debate page component - matches mobile prototype design
 const DebatePage = {
   template: `
-    <div class="phone-frame">
-      <div class="screen-container">
-        <!-- Status Bar -->
+    <div class="debate-page">
+        <!-- Status Bar (mobile only) -->
         <div class="status-bar">
           <span class="time">9:41</span>
           <div class="icons">
@@ -12,7 +11,7 @@ const DebatePage = {
           </div>
         </div>
 
-        <!-- Nav Bar -->
+        <!-- Nav Bar (mobile only) -->
         <div class="nav-bar">
           <div class="nav-back" @click="goBack">←</div>
           <div class="nav-title">
@@ -35,12 +34,51 @@ const DebatePage = {
           </div>
         </div>
 
+        <!-- iPad Top Nav (iPad only) -->
+        <div class="ipad-top-nav">
+          <div class="logo">
+            <span>⚡</span>
+            <span>KnowCraft</span>
+          </div>
+          <div class="nav-tabs">
+            <div class="nav-tab" @click="endDebate">
+              <span>⏭️</span>
+              <span>结束辩论</span>
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="streak-badge">
+              <span>🔥</span>
+              <span>7天</span>
+            </div>
+            <div class="user-avatar">👤</div>
+          </div>
+        </div>
+
         <!-- Debate Container -->
         <div class="debate-container">
           <!-- Debate Header -->
           <div class="debate-header">
             <div class="debate-round">第 {{ currentRound }}/{{ totalRounds }} 轮</div>
             <div style="font-size: 13px; color: #636E72;">⏱️ {{ timerDisplay }}</div>
+          </div>
+
+          <!-- Debate Topic Bar (iPad only) -->
+          <div class="debate-topic-bar">
+            <span>📋 {{ debateTopicTitle }}</span>
+            <span class="nav-stance-toggle" @click="showStancePopup = !showStancePopup" title="查看双方立场">👥</span>
+            <div v-show="showStancePopup" class="stance-popup" style="top: 100%; right: 0;">
+              <div class="stance-popup-row pro">
+                <span class="stance-popup-side">👍 正方</span>
+                <span class="stance-popup-desc">{{ proStanceDesc }}</span>
+                <span class="stance-popup-who">{{ userStance === 'pro' ? '👤 你' : opponentEmoji + ' ' + opponentName }}</span>
+              </div>
+              <div class="stance-popup-row con">
+                <span class="stance-popup-side">👎 反方</span>
+                <span class="stance-popup-desc">{{ conStanceDesc }}</span>
+                <span class="stance-popup-who">{{ userStance === 'con' ? '👤 你' : opponentEmoji + ' ' + opponentName }}</span>
+              </div>
+            </div>
           </div>
 
           <!-- Messages Area -->
@@ -84,7 +122,7 @@ const DebatePage = {
               <input
                 v-model="userInput"
                 @keydown.enter.exact.prevent="sendMessage"
-                :disabled="isTyping || !ws || ws.readyState !== 1"
+                :disabled="isTyping"
                 type="text"
                 class="input-field"
                 placeholder="输入你的观点..."
@@ -112,7 +150,6 @@ const DebatePage = {
             </div>
           </div>
         </div>
-      </div>
     </div>
   `,
 

@@ -2,7 +2,7 @@
 const LoginPage = {
   template: `
     <div class="login-page">
-      <!-- Status Bar -->
+      <!-- Status Bar (mobile only) -->
       <div class="status-bar">
         <span class="time">9:41</span>
         <div class="icons">
