@@ -2,7 +2,7 @@ import json
 import random
 import uuid
 from typing import AsyncIterator
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from database import async_session_maker
 from config import settings
@@ -44,7 +44,7 @@ class DebateSessionInMemory(BaseModel):
     max_rounds: int = 5
     round_number: int = 0
     phase: str = "init"
-    messages: list = []
+    messages: list = Field(default_factory=list)
 
     # Cached topic data
     topic_title: str
