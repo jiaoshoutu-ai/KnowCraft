@@ -42,6 +42,8 @@ class User(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     username: Mapped[str] = mapped_column(String(100))
+    email: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, unique=True)
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     avatar: Mapped[str] = mapped_column(String(500), default="")
     role: Mapped[UserRole] = mapped_column(default=UserRole.STUDENT)
 

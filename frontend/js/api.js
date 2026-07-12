@@ -83,5 +83,59 @@ const API = {
   // WebSocket connection
   createWebSocketConnection() {
     return new WebSocket(`${CONFIG.WS_BASE}/ws/debate`);
+  },
+
+  // Auth API methods
+  async sendVerificationCode(email) {
+    const response = await fetch(`${CONFIG.API_BASE}/api/auth/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.detail || '发送验证码失败');
+    }
+    return await response.json();
+  },
+
+  async verifyLogin(email, code) {
+    const response = await fetch(`${CONFIG.API_BASE}/api/auth/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.detail || '验证失败');
+    }
+    return await response.json();
+  },
+
+  // Token helpers
+  getToken() {
+    return localStorage.getItem('knowcraft_token');
+  },
+
+  setToken(token) {
+    localStorage.setItem('knowcraft_token', token);
+  },
+
+  setUserInfo(user) {
+    localStorage.setItem('knowcraft_user', JSON.stringify(user));
+  },
+
+  getUserInfo() {
+    const data = localStorage.getItem('knowcraft_user');
+    return data ? JSON.parse(data) : null;
+  },
+
+  logout() {
+    localStorage.removeItem('knowcraft_token');
+    localStorage.removeItem('knowcraft_user');
+  },
+
+  isLoggedIn() {
+    return !!this.getToken();
   }
 };

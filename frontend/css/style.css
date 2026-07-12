@@ -4383,6 +4383,20 @@ body {
   color: white;
 }
 
+.login-btn-wechat:disabled {
+  background: #A8D8B9;
+  cursor: not-allowed;
+}
+
+.login-btn-email {
+  background: #6C5CE7;
+  color: white;
+}
+
+.login-btn-email:hover {
+  background: #5B4BC4;
+}
+
 .login-btn-apple {
   background: #000000;
   color: white;
@@ -4392,6 +4406,118 @@ body {
   background: white;
   color: #2D3436;
   border: 2px solid #E9ECEF;
+}
+
+.login-btn-primary {
+  background: linear-gradient(135deg, #6C5CE7, #8B5CF6);
+  color: white;
+  box-shadow: 0 4px 16px rgba(108,92,231,0.3);
+}
+
+.login-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+}
+
+.login-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Login form styles */
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2D3436;
+}
+
+.login-form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #E9ECEF;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #2D3436;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.login-form-input:focus {
+  border-color: #6C5CE7;
+}
+
+.login-form-input::placeholder {
+  color: #B2BEC3;
+}
+
+.login-code-input {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 8px;
+  font-weight: 700;
+}
+
+.login-form-hint {
+  font-size: 14px;
+  color: #636E72;
+  text-align: center;
+}
+
+.login-form-hint strong {
+  color: #2D3436;
+}
+
+.login-form-error {
+  font-size: 13px;
+  color: #E17055;
+  text-align: center;
+}
+
+.login-form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-back-btn {
+  background: none;
+  border: none;
+  color: #636E72;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.login-back-btn:hover {
+  color: #6C5CE7;
+}
+
+.login-resend-btn {
+  background: none;
+  border: none;
+  color: #6C5CE7;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-resend-btn:disabled {
+  color: #B2BEC3;
+  cursor: not-allowed;
 }
 
 .login-terms {

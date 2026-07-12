@@ -38,6 +38,18 @@ class Settings(BaseSettings):
     # Paths
     topics_dir: str = str(Path(__file__).parent / "data" / "topics")
 
+    # JWT
+    jwt_secret_key: str = "knowcraft-dev-secret-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 10080  # 7 days
+
+    # SMTP (leave empty for mock mode — code printed to console)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

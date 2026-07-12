@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
 from api.topics import router as topics_router
+from api.auth import router as auth_router
 from api.websocket import router as ws_router
 from database import init_db
 # Import models to register them with SQLAlchemy
@@ -29,6 +30,7 @@ app.add_middleware(
 )
 
 app.include_router(topics_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
 app.include_router(ws_router)
 
 
