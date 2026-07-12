@@ -20,52 +20,57 @@ const FeedbackPage = {
 
         <!-- Main content area -->
         <div class="feedback-container">
-          <!-- Overall score card -->
-          <div class="score-overview">
-            <div class="score-label">总体评分</div>
-            <div class="score-value">{{ evaluation.totalScore }}</div>
-            <div class="score-max">/ 10 分</div>
+          <div v-if="loading" style="text-align: center; padding: 40px; color: #B2BEC3;">
+            正在加载评价...
           </div>
+          <template v-else>
+            <!-- Overall score card -->
+            <div class="score-overview">
+              <div class="score-label">总体评分</div>
+              <div class="score-value">{{ evaluation.totalScore }}</div>
+              <div class="score-max">/ 50 分</div>
+            </div>
 
-          <!-- Dimension scores breakdown -->
-          <div class="score-breakdown">
-            <div class="score-title">📊 能力维度评分</div>
+            <!-- Dimension scores breakdown -->
+            <div class="score-breakdown">
+              <div class="score-title">📊 能力维度评分</div>
 
-            <div v-for="(score, index) in evaluation.scores" :key="index" class="score-item">
-              <div class="score-icon">{{ score.icon }}</div>
-              <div class="score-info">
-                <div class="score-name">{{ score.name }}</div>
-                <div class="score-bar">
-                  <div class="score-fill" :style="{ width: (score.value * 10) + '%' }"></div>
+              <div v-for="(score, index) in evaluation.scores" :key="index" class="score-item">
+                <div class="score-icon">{{ score.icon }}</div>
+                <div class="score-info">
+                  <div class="score-name">{{ score.name }}</div>
+                  <div class="score-bar">
+                    <div class="score-fill" :style="{ width: (score.value * 10) + '%' }"></div>
+                  </div>
                 </div>
+                <div class="score-number">{{ score.value.toFixed(1) }}</div>
               </div>
-              <div class="score-number">{{ score.value.toFixed(1) }}</div>
             </div>
-          </div>
 
-          <!-- Strengths section -->
-          <div class="feedback-section">
-            <div class="score-title">✨ 亮点</div>
-            <div v-for="(strength, index) in evaluation.strengths" :key="'s' + index" class="feedback-item">
-              <div class="feedback-header">
-                <div class="feedback-icon">{{ strength.icon }}</div>
-                <div class="feedback-label">{{ strength.label }}</div>
+            <!-- Strengths section -->
+            <div class="feedback-section">
+              <div class="score-title">✨ 亮点</div>
+              <div v-for="(strength, index) in evaluation.strengths" :key="'s' + index" class="feedback-item">
+                <div class="feedback-header">
+                  <div class="feedback-icon">{{ strength.icon }}</div>
+                  <div class="feedback-label">{{ strength.label }}</div>
+                </div>
+                <div class="feedback-text">{{ strength.text }}</div>
               </div>
-              <div class="feedback-text">{{ strength.text }}</div>
             </div>
-          </div>
 
-          <!-- Suggestions section -->
-          <div class="feedback-section">
-            <div class="score-title">📈 改进建议</div>
-            <div v-for="(suggestion, index) in evaluation.suggestions" :key="'g' + index" class="feedback-item">
-              <div class="feedback-header">
-                <div class="feedback-icon">{{ suggestion.icon }}</div>
-                <div class="feedback-label">{{ suggestion.label }}</div>
+            <!-- Suggestions section -->
+            <div class="feedback-section">
+              <div class="score-title">📈 改进建议</div>
+              <div v-for="(suggestion, index) in evaluation.suggestions" :key="'g' + index" class="feedback-item">
+                <div class="feedback-header">
+                  <div class="feedback-icon">{{ suggestion.icon }}</div>
+                  <div class="feedback-label">{{ suggestion.label }}</div>
+                </div>
+                <div class="feedback-text">{{ suggestion.text }}</div>
               </div>
-              <div class="feedback-text">{{ suggestion.text }}</div>
             </div>
-          </div>
+          </template>
         </div>
 
         <!-- Action buttons -->
@@ -83,48 +88,64 @@ const FeedbackPage = {
       debateTopicId: '',
       userStance: '',
       difficulty: '',
+      sessionId: '',
+      loading: true,
       evaluation: {
-        totalScore: 8.5,
+        totalScore: 0,
         scores: [
-          { name: '逻辑性', icon: '🧠', value: 8.5 },
-          { name: '证据力', icon: '📚', value: 8.0 },
-          { name: '表达力', icon: '🗣️', value: 9.0 },
-          { name: '反驳力', icon: '⚔️', value: 8.5 },
-          { name: '多角度', icon: '👁️', value: 8.0 }
+          { name: '逻辑性', icon: '🧠', value: 0 },
+          { name: '证据力', icon: '📚', value: 0 },
+          { name: '表达力', icon: '🗣️', value: 0 },
+          { name: '反驳力', icon: '⚔️', value: 0 },
+          { name: '多角度', icon: '👁️', value: 0 }
         ],
-        strengths: [
-          {
-            icon: '🎯',
-            label: '论证有力',
-            text: '你能够准确抓住算法推荐机制的核心问题，指出其利用心理弱点的设计逻辑，论证清晰有力。'
-          },
-          {
-            icon: '💡',
-            label: '观点新颖',
-            text: '从青少年自控能力发展阶段的角度进行分析，展现了独特的思考视角。'
-          }
-        ],
-        suggestions: [
-          {
-            icon: '📊',
-            label: '增加数据支撑',
-            text: '可以引用相关研究数据或案例来增强论点的说服力，比如青少年使用短视频的具体时长统计。'
-          },
-          {
-            icon: '🔄',
-            label: '多角度思考',
-            text: '可以尝试从更多角度分析问题，比如考虑技术发展的必然性，或者探讨如何平衡创新与保护。'
-          }
-        ]
+        strengths: [],
+        suggestions: []
       }
     }
   },
 
-  mounted() {
+  async mounted() {
     this.topicId = this.$route.params.topicId
     this.debateTopicId = this.$route.params.debateTopicId
     this.userStance = this.$route.params.userStance
     this.difficulty = this.$route.params.difficulty
+    this.sessionId = this.$route.query.sessionId || ''
+
+    if (this.sessionId) {
+      try {
+        const detail = await API.getHistoryDetail(this.sessionId);
+        if (detail.evaluation) {
+          const e = detail.evaluation;
+          this.evaluation = {
+            totalScore:
+              e.logic + e.evidence + e.expression + e.rebuttal + e.critical_thinking,
+            scores: [
+              { name: '逻辑性', icon: '🧠', value: e.logic },
+              { name: '证据力', icon: '📚', value: e.evidence },
+              { name: '表达力', icon: '🗣️', value: e.expression },
+              { name: '反驳力', icon: '⚔️', value: e.rebuttal },
+              { name: '多角度', icon: '👁️', value: e.critical_thinking }
+            ],
+            strengths: (e.strengths || []).map(text => ({
+              icon: '🎯', label: '亮点', text
+            })),
+            suggestions: (e.improvements || []).map(text => ({
+              icon: '💡', label: '建议', text
+            }))
+          };
+          // Append summary as a strength card if present
+          if (e.summary) {
+            this.evaluation.strengths.unshift({
+              icon: '📝', label: '总评', text: e.summary
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load evaluation:', err.message);
+      }
+    }
+    this.loading = false;
   },
 
   methods: {
@@ -132,14 +153,7 @@ const FeedbackPage = {
       this.$router.push('/home')
     },
     debateAgain() {
-      // Navigate back to vote page with same topic for another debate
-      this.$router.push({
-        path: '/vote',
-        params: {
-          topicId: this.topicId,
-          debateTopicId: this.debateTopicId
-        }
-      })
+      this.$router.push(`/vote/${this.topicId}`)
     }
   }
 }

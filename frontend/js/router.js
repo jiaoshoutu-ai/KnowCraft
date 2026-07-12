@@ -61,3 +61,14 @@ const router = VueRouter.createRouter({
   history: VueRouter.createWebHashHistory(),
   routes
 });
+
+// Route guard — require login for all routes except the login page ('/')
+router.beforeEach((to, from, next) => {
+  const publicRoutes = ['/'];
+  if (!publicRoutes.includes(to.path) && !API.isLoggedIn()) {
+    next('/');
+  } else {
+    next();
+  }
+});
+

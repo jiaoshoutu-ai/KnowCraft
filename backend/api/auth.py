@@ -16,10 +16,12 @@ from models.auth import (
     VerifyRequest,
     AuthResponse,
     UserResponse,
+    UpdateProfileRequest,
 )
 from models.db_models import User
 from core.verification import store_code, verify_code
 from core.email import send_verification_email
+from core.auth import get_current_user
 
 router = APIRouter()
 
@@ -45,7 +47,33 @@ def _user_to_response(user: User) -> UserResponse:
         role=user.role.value,
         debate_count=user.debate_count,
         average_score=user.average_score,
+        streak_days=user.streak_days or 0,
     )
+
+
+@router.get("/auth/me", response_model=UserResponse)
+async def get_me(user: User = Depends(get_current_user)):
+    """Return current user info (from JWT token)."""
+    return _user_to_response(user)
+
+
+@router.put("/users/me", response_model=UserResponse)
+async def update_me(
+    req: UpdateProfileRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update current user's profile (username / avatar)."""
+    if req.username is not None:
+        name = req.username.strip()
+        if not name:
+            raise HTTPException(status_code=400, detail="昵称不能为空")
+        user.username = name
+    if req.avatar is not None:
+        user.avatar = req.avatar
+    await db.commit()
+    await db.refresh(user)
+    return _user_to_response(user)
 
 
 @router.post("/auth/send-code")

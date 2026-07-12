@@ -38,10 +38,10 @@ const HomePage = {
           </div>
         </div>
         <div class="sidebar-user">
-          <div class="user-avatar">👨‍🎓</div>
+          <div class="user-avatar">{{ user.avatar || '👨‍🎓' }}</div>
           <div class="user-info">
-            <div class="user-name">小明同学</div>
-            <div class="user-level">Lv.3 思辨小达人</div>
+            <div class="user-name">{{ user.username || '同学' }}</div>
+            <div class="user-level">Lv.{{ level.level }} {{ level.title }}</div>
           </div>
         </div>
       </div>
@@ -69,22 +69,22 @@ const HomePage = {
         <div class="user-info">
           <div class="streak-badge">
             <span>🔥</span>
-            <span>7天</span>
+            <span>{{ user.streak_days }}天</span>
           </div>
-          <div class="user-avatar" @click="goToProfile">👤</div>
+          <div class="user-avatar" @click="goToProfile">{{ user.avatar || '👤' }}</div>
         </div>
       </div>
 
       <!-- iPad Page Header (769px - 1024px) -->
       <div class="ipad-page-header">
-        <div class="page-title">欢迎回来，思辨小达人</div>
+        <div class="page-title">欢迎回来，{{ user.username || '同学' }}</div>
         <div class="page-subtitle">今天想要挑战哪个话题？</div>
       </div>
 
       <!-- Desktop Top Bar (min-width: 1025px) -->
       <div class="top-bar">
         <div>
-          <div class="page-title">欢迎回来，思辨小达人</div>
+          <div class="page-title">欢迎回来，{{ user.username || '同学' }}</div>
           <div class="page-subtitle">今天想要挑战哪个话题？</div>
         </div>
         <div class="top-actions">
@@ -100,23 +100,19 @@ const HomePage = {
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">完成辩论</div>
-            <div class="stat-value">12</div>
-            <div class="stat-change">↑ 本周 +3</div>
+            <div class="stat-value">{{ user.debate_count }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">平均得分</div>
-            <div class="stat-value">8.5</div>
-            <div class="stat-change">↑ 较上月 +0.8</div>
+            <div class="stat-value">{{ avgScoreText }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">连续打卡</div>
-            <div class="stat-value">7天</div>
-            <div class="stat-change">🔥 继续保持</div>
+            <div class="stat-value">{{ user.streak_days }}天</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">能力等级</div>
-            <div class="stat-value">Lv.3</div>
-            <div class="stat-change">距离 Lv.4 还需 5 场</div>
+            <div class="stat-value">Lv.{{ level.level }}</div>
           </div>
         </div>
       </div>
@@ -127,34 +123,19 @@ const HomePage = {
         <div class="stats-grid desktop-ipad-stats">
           <div class="stat-card">
             <div class="stat-label">完成辩论</div>
-            <div class="stat-value">12</div>
-            <div class="stat-change">
-              <span>↑</span>
-              <span>本周 +3</span>
-            </div>
+            <div class="stat-value">{{ user.debate_count }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">平均得分</div>
-            <div class="stat-value">8.5</div>
-            <div class="stat-change">
-              <span>↑</span>
-              <span>较上月 +0.8</span>
-            </div>
+            <div class="stat-value">{{ avgScoreText }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">连续打卡</div>
-            <div class="stat-value">7天</div>
-            <div class="stat-change">
-              <span>🔥</span>
-              <span>继续保持</span>
-            </div>
+            <div class="stat-value">{{ user.streak_days }}天</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">能力等级</div>
-            <div class="stat-value">Lv.3</div>
-            <div class="stat-change">
-              <span>距离 Lv.4 还需 5 场</span>
-            </div>
+            <div class="stat-value">Lv.{{ level.level }}</div>
           </div>
         </div>
 
@@ -219,21 +200,40 @@ const HomePage = {
   data() {
     return {
       topics: [],
-      loading: true
+      loading: true,
+      user: API.getUserInfo() || {
+        username: '同学',
+        avatar: '',
+        debate_count: 0,
+        average_score: 0,
+        streak_days: 0,
+      },
     }
   },
 
+  computed: {
+    level() {
+      return getUserLevel(this.user.debate_count || 0);
+    },
+    avgScoreText() {
+      const s = this.user.average_score;
+      return typeof s === 'number' ? s.toFixed(1) : '0.0';
+    },
+  },
+
   async mounted() {
-    await this.loadTopics()
+    try {
+      this.user = await API.getMe();
+    } catch (e) {
+      console.warn('getMe failed:', e.message);
+    }
+    await this.loadTopics();
   },
 
   methods: {
     async loadTopics() {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
-        const data = await fetch(`${CONFIG.API_BASE}/api/topics`, { signal: controller.signal }).then(r => r.json())
-        clearTimeout(timeoutId);
+        const data = await API.getTopics();
         this.topics = data.map(t => ({
           id: t.id,
           title: t.title,

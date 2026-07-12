@@ -1,7 +1,7 @@
 import json
 import random
 import uuid
-from typing import AsyncIterator
+from typing import AsyncIterator, Optional
 from pydantic import BaseModel, Field
 
 from database import async_session_maker
@@ -10,6 +10,7 @@ from models.debate import (
     DebateMessage,
     DebateScores,
     Stance,
+    Difficulty,
 )
 from prompts.debate import build_opponent_prompt
 from prompts.evaluation import build_evaluation_prompt
@@ -41,6 +42,8 @@ class DebateSessionInMemory(BaseModel):
     debate_topic_id: str
     user_stance: Stance
     ai_stance: Stance
+    user_id: Optional[str] = None
+    difficulty: Difficulty = Difficulty.INTERMEDIATE
     max_rounds: int = 5
     round_number: int = 0
     phase: str = "init"
@@ -65,6 +68,7 @@ async def create_debate_session(
     topic_id: str,
     debate_topic_id: str,
     user_stance: Stance,
+    user_id: Optional[str] = None,
 ) -> DebateSessionInMemory:
     """Create a new debate session with pro/con stance model."""
     # Fetch topic data from database
@@ -103,6 +107,7 @@ async def create_debate_session(
         debate_topic_id=debate_topic_id,
         user_stance=user_stance,
         ai_stance=ai_stance,
+        user_id=user_id,
         max_rounds=settings.debate_max_rounds,
         topic_title=topic.title,
         topic_summary=topic.summary,

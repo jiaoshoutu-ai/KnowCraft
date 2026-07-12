@@ -1,6 +1,7 @@
 """
 Pydantic models for authentication.
 """
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
@@ -24,6 +25,13 @@ class UserResponse(BaseModel):
     role: str
     debate_count: int = 0
     average_score: float = 0.0
+    streak_days: int = 0
+
+
+class UpdateProfileRequest(BaseModel):
+    """Request to update user profile."""
+    username: Optional[str] = None
+    avatar: Optional[str] = None
 
 
 class AuthResponse(BaseModel):

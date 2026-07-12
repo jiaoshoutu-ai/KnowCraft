@@ -49,9 +49,9 @@ const DebatePage = {
           <div class="user-info">
             <div class="streak-badge">
               <span>🔥</span>
-              <span>7天</span>
+              <span>{{ user.streak_days }}天</span>
             </div>
-            <div class="user-avatar">👤</div>
+            <div class="user-avatar">{{ user.avatar || '👤' }}</div>
           </div>
         </div>
 
@@ -160,6 +160,9 @@ const DebatePage = {
       userStance: '',
       difficulty: '',
       ws: null,
+      user: API.getUserInfo() || { avatar: '', streak_days: 0 },
+      lastSessionId: null,
+      lastEvaluation: null,
       messages: [
         {
           type: 'ai',
@@ -215,8 +218,7 @@ const DebatePage = {
 
   methods: {
     connectWebSocket() {
-      const wsUrl = `${CONFIG.WS_BASE}/ws/debate`
-      this.ws = new WebSocket(wsUrl)
+      this.ws = API.createWebSocketConnection()
 
       this.ws.onopen = () => {
         console.log('WebSocket connected')
@@ -323,6 +325,10 @@ const DebatePage = {
           content: data.content
         })
         this.scrollToBottom()
+      } else if (data.type === 'evaluation') {
+        // Persist the evaluation + session_id for FeedbackPage
+        this.lastSessionId = data.session_id || null;
+        this.lastEvaluation = data.data || null;
       } else if (data.type === 'error') {
         this.messages.push({
           type: 'system',
@@ -369,7 +375,12 @@ const DebatePage = {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
         this.ws.send(JSON.stringify({ type: 'end' }))
       }
-      this.$router.push(`/feedback/${this.topicId}/${this.debateTopicId}/${this.userStance}/${this.difficulty}`)
+      const query = {};
+      if (this.lastSessionId) query.sessionId = this.lastSessionId;
+      this.$router.push({
+        path: `/feedback/${this.topicId}/${this.debateTopicId}/${this.userStance}/${this.difficulty}`,
+        query,
+      })
     },
 
     goBack() {
