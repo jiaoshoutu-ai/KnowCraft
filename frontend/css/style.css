@@ -5822,6 +5822,7 @@ body.login-route .login-page .status-bar {
   }
 
   .topic-library-page > .ipad-page-header,
+  .topic-library-page > .topic-library-content,
   .topic-detail-page > .video-player,
   .vote-container,
   .debate-container,
@@ -5831,7 +5832,6 @@ body.login-route .login-page .status-bar {
     margin-top: 102px;
   }
 
-  .topic-library-content,
   .topic-detail-page > .video-info,
   .topic-detail-page > div[style] {
     margin-top: 28px;
@@ -5850,7 +5850,7 @@ body.login-route .login-page .status-bar {
     box-shadow: 0 8px 24px rgba(45,52,54,0.08);
   }
 
-  .topic-library-content,
+  .topic-library-page > .topic-library-content,
   .vote-container,
   .feedback-page .screen-container,
   .profile-page .screen-container,
