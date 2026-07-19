@@ -34,15 +34,32 @@ const HomePage = {
           <div class="admin-label">管理后台</div>
           <div class="nav-item" @click="goToAdmin">
             <span class="nav-item-icon">📊</span>
+            <span>数据概览</span>
+          </div>
+          <div class="nav-item" @click="goToAdmin">
+            <span class="nav-item-icon">📚</span>
             <span>话题管理</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-item-icon">👥</span>
+            <span>用户管理</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-item-icon">⚔️</span>
+            <span>辩论记录</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-item-icon">⚙️</span>
+            <span>系统设置</span>
           </div>
         </div>
         <div class="sidebar-user">
-          <div class="user-avatar">{{ user.avatar || '👨‍🎓' }}</div>
+          <div class="user-avatar">👨‍🎓</div>
           <div class="user-info">
-            <div class="user-name">{{ user.username || '同学' }}</div>
+            <div class="user-name">{{ user.username || '小明同学' }}</div>
             <div class="user-level">Lv.{{ level.level }} {{ level.title }}</div>
           </div>
+          <button class="sidebar-logout" @click="logout">退出</button>
         </div>
       </div>
 
@@ -124,18 +141,22 @@ const HomePage = {
           <div class="stat-card">
             <div class="stat-label">完成辩论</div>
             <div class="stat-value">{{ user.debate_count }}</div>
+            <div class="stat-change">↗ 本周 +3</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">平均得分</div>
             <div class="stat-value">{{ avgScoreText }}</div>
+            <div class="stat-change">↗ 较上月 +0.8</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">连续打卡</div>
             <div class="stat-value">{{ user.streak_days }}天</div>
+            <div class="stat-change warning">🔥 继续保持</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">能力等级</div>
             <div class="stat-value">Lv.{{ level.level }}</div>
+            <div class="stat-change">距离 Lv.4 还需 5 场</div>
           </div>
         </div>
 
@@ -154,6 +175,7 @@ const HomePage = {
                @click="goToTopic(topic)"
                class="topic-card">
             <div class="topic-thumbnail">
+              <div v-if="topic.badge" class="topic-badge" :class="topic.badgeClass">{{ topic.badge }}</div>
               <div class="play-button">▶️</div>
               <div class="topic-duration">{{ topic.duration }}</div>
               <div v-if="topic.tag" class="topic-tag">{{ topic.tag }}</div>
@@ -234,14 +256,16 @@ const HomePage = {
     async loadTopics() {
       try {
         const data = await API.getTopics();
-        this.topics = data.map(t => ({
+        this.topics = data.map((t, index) => ({
           id: t.id,
           title: t.title,
           description: t.summary || t.description || '',
           duration: t.video?.duration || '未知',
           tag: t.tags?.[0] || '',
           tags: t.tags || [],
-          views: t.view_count ? (t.view_count >= 1000 ? `${(t.view_count/1000).toFixed(1)}k 人观看` : `${t.view_count} 人观看`) : '0 人观看'
+          views: t.view_count ? (t.view_count >= 1000 ? `${(t.view_count/1000).toFixed(1)}k` : `${t.view_count}`) : '0',
+          badge: index === 0 ? '热门' : (index === 1 ? '新' : ''),
+          badgeClass: index === 0 ? 'hot' : (index === 1 ? 'new' : '')
         }))
       } catch (err) {
         console.error('Failed to load topics:', err)
@@ -262,6 +286,10 @@ const HomePage = {
     },
     goToAdmin() {
       this.$router.push('/admin');
+    },
+    logout() {
+      API.logout();
+      this.$router.push('/');
     },
     goToHome() {
       // Already on home page

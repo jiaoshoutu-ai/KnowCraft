@@ -1,7 +1,7 @@
 // Profile page component
 const ProfilePage = {
   template: `
-    <div class="phone-frame">
+    <div class="phone-frame profile-page">
       <div class="screen-container">
         <!-- Status bar -->
         <div class="status-bar">
