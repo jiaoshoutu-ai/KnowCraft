@@ -150,7 +150,10 @@ async def get_my_history(
     """Return current user's completed debate sessions."""
     result = await db.execute(
         select(DebateSession)
-        .options(selectinload(DebateSession.debate_topic))
+        .options(
+            selectinload(DebateSession.debate_topic),
+            selectinload(DebateSession.evaluation),
+        )
         .where(DebateSession.user_id == user.id)
         .where(DebateSession.phase == DebatePhase.DONE)
         .order_by(DebateSession.completed_at.desc().nullslast())

@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 import uuid
 from typing import AsyncIterator, Optional
@@ -21,6 +22,7 @@ from core import get_llm_adapter
 
 # Get configured LLM adapter
 llm = get_llm_adapter()
+logger = logging.getLogger(__name__)
 
 # Opponent name pool
 OPPONENT_NAMES = [
@@ -172,17 +174,68 @@ async def evaluate_debate(session: DebateSessionInMemory) -> dict:
         conversation=conversation,
     )
 
-    raw = await llm.chat([], prompt, max_tokens=800, temperature=0.3)
+    logger.info(
+        "Starting debate evaluation: session_id=%s topic_id=%s debate_topic_id=%s messages=%s conversation_chars=%s",
+        session.session_id,
+        session.topic_id,
+        session.debate_topic_id,
+        len(session.messages),
+        len(conversation),
+    )
+    data = None
+    last_json_error = None
+    for attempt in range(2):
+        raw = await llm.chat([], prompt, max_tokens=1200, temperature=0.2)
+        logger.info(
+            "Received debate evaluation response: session_id=%s attempt=%s raw_chars=%s raw_preview=%r",
+            session.session_id,
+            attempt + 1,
+            len(raw or ""),
+            (raw or "")[:1000],
+        )
+        print(
+            "[Debate Evaluation] LLM raw response:",
+            {
+                "session_id": session.session_id,
+                "attempt": attempt + 1,
+                "raw_chars": len(raw or ""),
+                "raw_preview": (raw or "")[:1000],
+            },
+        )
 
-    # Parse JSON from response (handle markdown code blocks)
-    text = raw.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
-        text = text.strip()
+        # Parse JSON from response (handle markdown code blocks)
+        text = (raw or "").strip()
+        if text.startswith("```"):
+            text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            text = text.strip()
 
-    data = json.loads(text)
+        try:
+            data = json.loads(text)
+            break
+        except json.JSONDecodeError as exc:
+            last_json_error = exc
+            logger.exception(
+                "Failed to parse debate evaluation JSON: session_id=%s attempt=%s text_chars=%s text_preview=%r",
+                session.session_id,
+                attempt + 1,
+                len(text),
+                text[:2000],
+            )
+            print(
+                "[Debate Evaluation] JSON parse failed:",
+                {
+                    "session_id": session.session_id,
+                    "attempt": attempt + 1,
+                    "error": str(exc),
+                    "text_chars": len(text),
+                    "text_preview": text[:2000],
+                },
+            )
+
+    if data is None:
+        raise last_json_error
 
     # Calculate total score
     scores = DebateScores(**data["scores"])

@@ -61,7 +61,12 @@ const DebatePage = {
           <!-- Debate Header -->
           <div class="debate-header">
             <div class="debate-round">第 {{ currentRound }}/{{ totalRounds }} 轮</div>
-            <div style="font-size: 13px; color: #636E72;">⏱️ {{ timerDisplay }}</div>
+            <div class="debate-header-actions">
+              <div class="debate-timer">⏱️ {{ timerDisplay }}</div>
+              <button class="debate-end-btn" type="button" :disabled="isEndingDebate" @click="endDebate">
+                {{ isEndingDebate ? '生成评价中...' : '结束辩论' }}
+              </button>
+            </div>
           </div>
 
           <!-- Debate Topic Bar (iPad only) -->
@@ -164,6 +169,8 @@ const DebatePage = {
       user: API.getUserInfo() || { avatar: '', streak_days: 0 },
       lastSessionId: null,
       lastEvaluation: null,
+      isEndingDebate: false,
+      shouldNavigateAfterEvaluation: false,
       messages: [
         {
           type: 'ai',
@@ -313,10 +320,14 @@ const DebatePage = {
             content: `第 ${this.currentRound} 轮开始`
           })
         } else if (event === 'debate_ended') {
-          this.messages.push({
-            type: 'system',
-            content: '辩论结束，正在生成评价...'
-          })
+          this.isEndingDebate = true
+          this.shouldNavigateAfterEvaluation = true
+          if (!this.messages.some(message => message.type === 'system' && message.content === '辩论结束，正在生成评价...')) {
+            this.messages.push({
+              type: 'system',
+              content: '辩论结束，正在生成评价...'
+            })
+          }
         }
         this.scrollToBottom()
       } else if (data.type === 'scaffold') {
@@ -330,6 +341,10 @@ const DebatePage = {
         // Persist the evaluation + session_id for FeedbackPage
         this.lastSessionId = data.session_id || null;
         this.lastEvaluation = data.data || null;
+        this.isEndingDebate = false;
+        if (this.shouldNavigateAfterEvaluation) {
+          this.navigateToFeedback();
+        }
       } else if (data.type === 'error') {
         this.messages.push({
           type: 'system',
@@ -373,9 +388,24 @@ const DebatePage = {
     },
 
     endDebate() {
+      if (this.isEndingDebate) return
+
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.isEndingDebate = true
+        this.shouldNavigateAfterEvaluation = true
+        this.messages.push({
+          type: 'system',
+          content: '辩论结束，正在生成评价...'
+        })
         this.ws.send(JSON.stringify({ type: 'end' }))
+        this.scrollToBottom()
+        return
       }
+
+      this.navigateToFeedback()
+    },
+
+    navigateToFeedback() {
       const query = {};
       if (this.lastSessionId) query.sessionId = this.lastSessionId;
       this.$router.push({

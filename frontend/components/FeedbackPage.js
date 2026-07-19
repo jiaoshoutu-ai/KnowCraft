@@ -25,50 +25,55 @@ const FeedbackPage = {
             正在加载评价...
           </div>
           <template v-else>
-            <!-- Overall score card -->
-            <div class="score-overview">
-              <div class="score-label">总体评分</div>
-              <div class="score-value">{{ evaluation.totalScore }}</div>
-              <div class="score-max">/ 50 分</div>
+            <div class="feedback-hero">
+              <div class="feedback-hero-content">
+                <div class="feedback-kicker">辩论完成</div>
+                <div class="feedback-hero-title">你的本场辩论评价</div>
+                <div class="feedback-hero-summary">{{ evaluation.summary || '本次辩论已完成，继续保持表达和思辨练习。' }}</div>
+              </div>
+              <div class="score-overview">
+                <div class="score-label">总体评分</div>
+                <div class="score-value">{{ evaluation.totalScore }}</div>
+                <div class="score-max">/ 50 分</div>
+              </div>
             </div>
 
-            <!-- Dimension scores breakdown -->
-            <div class="score-breakdown">
-              <div class="score-title">📊 能力维度评分</div>
+            <div class="feedback-grid">
+              <!-- Dimension scores breakdown -->
+              <div class="score-breakdown feedback-card">
+                <div class="feedback-card-title">📊 能力维度评分</div>
 
-              <div v-for="(score, index) in evaluation.scores" :key="index" class="score-item">
-                <div class="score-icon">{{ score.icon }}</div>
-                <div class="score-info">
-                  <div class="score-name">{{ score.name }}</div>
-                  <div class="score-bar">
-                    <div class="score-fill" :style="{ width: (score.value * 10) + '%' }"></div>
+                <div class="score-table">
+                  <div v-for="(score, index) in evaluation.scores" :key="index" class="score-cell">
+                    <div class="score-cell-name">{{ score.name }}</div>
+                    <div class="score-cell-value">{{ score.value.toFixed(1) }}<span>/10</span></div>
+                    <div class="score-cell-level">{{ getScoreLevel(score.value) }}</div>
                   </div>
                 </div>
-                <div class="score-number">{{ score.value.toFixed(1) }}</div>
               </div>
-            </div>
 
-            <!-- Strengths section -->
-            <div class="feedback-section">
-              <div class="score-title">✨ 亮点</div>
-              <div v-for="(strength, index) in evaluation.strengths" :key="'s' + index" class="feedback-item">
-                <div class="feedback-header">
-                  <div class="feedback-icon">{{ strength.icon }}</div>
-                  <div class="feedback-label">{{ strength.label }}</div>
-                </div>
-                <div class="feedback-text">{{ strength.text }}</div>
-              </div>
-            </div>
+              <!-- Feedback details section -->
+              <div class="feedback-section feedback-card feedback-summary-card">
+                <div class="feedback-card-title">评价要点</div>
+                <div class="feedback-points-grid">
+                  <div class="feedback-point-group">
+                    <div class="feedback-point-title">亮点</div>
+                    <ol class="feedback-point-list">
+                      <li v-for="(strength, index) in evaluation.strengths" :key="'s' + index">
+                        {{ strength.text }}
+                      </li>
+                    </ol>
+                  </div>
 
-            <!-- Suggestions section -->
-            <div class="feedback-section">
-              <div class="score-title">📈 改进建议</div>
-              <div v-for="(suggestion, index) in evaluation.suggestions" :key="'g' + index" class="feedback-item">
-                <div class="feedback-header">
-                  <div class="feedback-icon">{{ suggestion.icon }}</div>
-                  <div class="feedback-label">{{ suggestion.label }}</div>
+                  <div class="feedback-point-group">
+                    <div class="feedback-point-title">改进建议</div>
+                    <ol class="feedback-point-list">
+                      <li v-for="(suggestion, index) in evaluation.suggestions" :key="'g' + index">
+                        {{ suggestion.text }}
+                      </li>
+                    </ol>
+                  </div>
                 </div>
-                <div class="feedback-text">{{ suggestion.text }}</div>
               </div>
             </div>
           </template>
@@ -101,7 +106,8 @@ const FeedbackPage = {
           { name: '多角度', icon: '👁️', value: 0 }
         ],
         strengths: [],
-        suggestions: []
+        suggestions: [],
+        summary: ''
       }
     }
   },
@@ -124,7 +130,7 @@ const FeedbackPage = {
             scores: [
               { name: '逻辑性', icon: '🧠', value: e.logic },
               { name: '证据力', icon: '📚', value: e.evidence },
-              { name: '表达力', icon: '🗣️', value: e.expression },
+              { name: '表达力', icon: '💬', value: e.expression },
               { name: '反驳力', icon: '⚔️', value: e.rebuttal },
               { name: '多角度', icon: '👁️', value: e.critical_thinking }
             ],
@@ -133,14 +139,9 @@ const FeedbackPage = {
             })),
             suggestions: (e.improvements || []).map(text => ({
               icon: '💡', label: '建议', text
-            }))
+            })),
+            summary: e.summary || ''
           };
-          // Append summary as a strength card if present
-          if (e.summary) {
-            this.evaluation.strengths.unshift({
-              icon: '📝', label: '总评', text: e.summary
-            });
-          }
         }
       } catch (err) {
         console.warn('Failed to load evaluation:', err.message);
@@ -150,6 +151,13 @@ const FeedbackPage = {
   },
 
   methods: {
+    getScoreLevel(value) {
+      if (value >= 9) return '优秀'
+      if (value >= 7) return '良好'
+      if (value >= 5) return '继续练习'
+      return '需要加强'
+    },
+
     goHome() {
       this.$router.push('/home')
     },

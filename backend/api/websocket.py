@@ -122,6 +122,73 @@ async def _send_error(ws: WebSocket, message: str):
     await _send_json(ws, {"type": "error", "data": {"message": message}})
 
 
+async def _complete_debate(ws: WebSocket, session) -> None:
+    """Generate, persist, and send final evaluation for a debate session."""
+    print(
+        "[Debate Evaluation] Start:",
+        {
+            "session_id": session.session_id,
+            "topic_id": session.topic_id,
+            "debate_topic_id": session.debate_topic_id,
+            "round_number": session.round_number,
+            "messages": len(session.messages),
+        },
+    )
+
+    session.phase = "evaluating"
+    update_session(session)
+
+    await _send_json(ws, {
+        "type": "system",
+        "session_id": session.session_id,
+        "data": {"event": "debate_ended", "round": session.round_number},
+    })
+
+    try:
+        evaluation = await evaluate_debate(session)
+    except Exception as e:
+        import traceback
+        print(
+            "[Debate Evaluation] Failed:",
+            {
+                "session_id": session.session_id,
+                "topic_id": session.topic_id,
+                "debate_topic_id": session.debate_topic_id,
+                "error": str(e),
+            },
+        )
+        traceback.print_exc()
+        raise
+
+    print(
+        "[Debate Evaluation] Generated:",
+        {
+            "session_id": session.session_id,
+            "total_score": evaluation.get("total_score"),
+            "strengths": len(evaluation.get("strengths") or []),
+            "improvements": len(evaluation.get("improvements") or []),
+        },
+    )
+    session.phase = "done"
+    update_session(session)
+
+    # Persist to database (best-effort; don't block WS on failure)
+    try:
+        await _persist_debate_result(session, evaluation)
+    except Exception as e:
+        import traceback
+        print(f"[Persist Error] Failed to save debate result: {e}")
+        traceback.print_exc()
+
+    await _send_json(ws, {
+        "type": "evaluation",
+        "session_id": session.session_id,
+        "data": evaluation,
+    })
+
+    delete_session(session.session_id)
+
+
 @router.websocket("/ws/debate")
 async def debate_websocket(ws: WebSocket):
     await ws.accept()
@@ -279,13 +346,7 @@ async def debate_websocket(ws: WebSocket):
 
                 # Check if debate should end
                 if session.round_number >= session.max_rounds:
-                    session.phase = "evaluating"
-                    update_session(session)
-                    await _send_json(ws, {
-                        "type": "system",
-                        "session_id": session.session_id,
-                        "data": {"event": "debate_ended", "round": session.round_number},
-                    })
+                    await _complete_debate(ws, session)
                 else:
                     session.round_number += 1
                     update_session(session)
@@ -301,30 +362,10 @@ async def debate_websocket(ws: WebSocket):
                     continue
                 if session.phase == "done":
                     continue
+                if session.phase == "evaluating":
+                    continue
 
-                session.phase = "evaluating"
-                update_session(session)
-
-                # Run evaluation
-                evaluation = await evaluate_debate(session)
-                session.phase = "done"
-                update_session(session)
-
-                # Persist to database (best-effort; don't block WS on failure)
-                try:
-                    await _persist_debate_result(session, evaluation)
-                except Exception as e:
-                    import traceback
-                    print(f"[Persist Error] Failed to save debate result: {e}")
-                    traceback.print_exc()
-
-                await _send_json(ws, {
-                    "type": "evaluation",
-                    "session_id": session.session_id,
-                    "data": evaluation,
-                })
-
-                delete_session(session.session_id)
+                await _complete_debate(ws, session)
 
             else:
                 await _send_error(ws, f"Unknown message type: {msg_type}")
