@@ -109,16 +109,17 @@ const HomePage = {
         </div>
 
         <!-- Section Header -->
-        <div class="section-header">
-          <div class="section-title">今日推荐</div>
-          <div class="view-all" @click="goToTopicLibrary">
-            <span>查看全部</span>
-            <span>→</span>
+        <div class="home-section-card">
+          <div class="section-header">
+            <div class="section-title">今日推荐</div>
+            <div class="view-all" @click="goToTopicLibrary">
+              <span>查看全部</span>
+              <span>→</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Topics Grid -->
-        <div class="topics-grid">
+          <!-- Topics Grid -->
+          <div class="topics-grid">
           <div v-for="topic in topics" :key="topic.id"
                @click="goToTopic(topic)"
                class="topic-card">

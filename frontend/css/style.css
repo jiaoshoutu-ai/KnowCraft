@@ -5468,19 +5468,51 @@ body.login-route .login-page .status-bar {
 }
 
 /* Shared desktop sidebar */
+.desktop-shell,
+.desktop-topbar,
 .desktop-sidebar {
   display: none;
 }
 
 @media (min-width: 1025px) {
-  .desktop-sidebar {
+  .desktop-shell {
+    display: block;
+  }
+
+  .desktop-topbar {
     display: flex;
     position: fixed;
     left: 0;
     top: 0;
+    right: 0;
+    height: 78px;
+    padding: 0 32px;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #F5F2FF, #EEF0FF);
+    border-bottom: 1px solid #E6E0FF;
+    box-shadow: 0 2px 12px rgba(108,92,231,0.08);
+    z-index: 1100;
+  }
+
+  .desktop-topbar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #6C5CE7;
+    font-size: 21px;
+    font-weight: 800;
+  }
+
+  .desktop-sidebar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 78px;
     bottom: 0;
     width: 280px;
-    height: 100vh;
+    height: calc(100vh - 78px);
     background: #FFFFFF;
     border-right: 1px solid #E9ECEF;
     box-shadow: 2px 0 12px rgba(0,0,0,0.04);
@@ -5653,6 +5685,17 @@ body.login-route .login-page .status-bar {
     margin-left: 280px;
   }
 
+  .home-page .top-bar,
+  .topic-library-page > .ipad-page-header,
+  .topic-detail-page > .video-player,
+  .vote-container,
+  .debate-container,
+  .feedback-page .screen-container,
+  .profile-page .screen-container,
+  .admin-main {
+    margin-top: 78px;
+  }
+
   .topic-library-page > .ipad-page-header {
     display: block;
     padding: 32px 56px 16px;
@@ -5715,6 +5758,113 @@ body.login-route .login-page .status-bar {
   .profile-page .screen-container {
     margin-left: 280px;
     padding-left: 56px;
+  }
+
+  .home-page .top-bar,
+  .home-page .content-container {
+    width: min(1180px, calc(100vw - 392px));
+    margin-left: calc(280px + (100vw - 280px - min(1180px, calc(100vw - 392px))) / 2);
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .home-page {
+    padding-top: 102px;
+  }
+
+  .home-page .top-bar {
+    height: auto;
+    min-height: 112px;
+    margin-top: 0;
+    padding: 28px 32px;
+    border: 1px solid #F1F2F4;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(45,52,54,0.08);
+  }
+
+  .home-page .content-container {
+    padding: 28px 0 64px;
+  }
+
+  .home-page .desktop-ipad-stats {
+    margin-bottom: 28px;
+  }
+
+  .home-page .stat-card,
+  .home-page .home-section-card {
+    border: 1px solid #F1F2F4;
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(45,52,54,0.08);
+  }
+
+  .home-page .home-section-card {
+    padding: 28px;
+  }
+
+  .home-page .home-section-card .section-header {
+    margin-bottom: 24px;
+  }
+
+  .topic-library-page > .ipad-page-header,
+  .topic-library-content,
+  .topic-detail-page > .video-player,
+  .topic-detail-page > .video-info,
+  .topic-detail-page > div[style],
+  .vote-container,
+  .debate-container,
+  .feedback-page .screen-container,
+  .profile-page .screen-container,
+  .admin-main {
+    width: min(1180px, calc(100vw - 392px));
+    margin-left: calc(280px + (100vw - 280px - min(1180px, calc(100vw - 392px))) / 2);
+    margin-right: auto;
+  }
+
+  .topic-library-page > .ipad-page-header,
+  .topic-detail-page > .video-player,
+  .vote-container,
+  .debate-container,
+  .feedback-page .screen-container,
+  .profile-page .screen-container,
+  .admin-main {
+    margin-top: 102px;
+  }
+
+  .topic-library-content,
+  .topic-detail-page > .video-info,
+  .topic-detail-page > div[style] {
+    margin-top: 28px;
+  }
+
+  .topic-library-page > .ipad-page-header,
+  .topic-library-content,
+  .vote-container,
+  .debate-container,
+  .feedback-page .screen-container,
+  .profile-page .screen-container,
+  .admin-main {
+    border: 1px solid #F1F2F4;
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(45,52,54,0.08);
+  }
+
+  .topic-library-content,
+  .vote-container,
+  .feedback-page .screen-container,
+  .profile-page .screen-container,
+  .admin-main {
+    padding: 28px;
+  }
+
+  .topic-detail-page > .video-player,
+  .topic-detail-page > .video-info,
+  .topic-detail-page > div[style] {
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(45,52,54,0.08);
+    overflow: hidden;
   }
 }
 

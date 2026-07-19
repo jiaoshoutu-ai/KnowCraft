@@ -7,15 +7,16 @@ const DesktopSidebar = {
     }
   },
   template: `
-    <aside class="desktop-sidebar">
-      <div class="desktop-sidebar-logo">
-        <div class="desktop-sidebar-logo-text">
+    <div class="desktop-shell">
+      <header class="desktop-topbar">
+        <div class="desktop-topbar-brand">
           <span>⚡</span>
           <span>KnowCraft</span>
         </div>
-      </div>
+      </header>
 
-      <nav class="desktop-sidebar-nav">
+      <aside class="desktop-sidebar">
+        <nav class="desktop-sidebar-nav">
         <div class="desktop-sidebar-item" :class="{ active: activeTab === 'home' }" @click="goHome">
           <span class="desktop-sidebar-icon">🏠</span>
           <span>首页</span>
@@ -62,7 +63,8 @@ const DesktopSidebar = {
         </div>
         <button class="desktop-sidebar-logout" @click="logout">退出</button>
       </div>
-    </aside>
+      </aside>
+    </div>
   `,
   data() {
     return {
