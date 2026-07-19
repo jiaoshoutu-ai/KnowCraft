@@ -2,6 +2,7 @@
 const TopicDetail = {
   template: `
     <div class="topic-detail-page">
+      <DesktopSidebar active-tab="topics"></DesktopSidebar>
       <!-- Nav bar with back arrow and title -->
       <div class="nav-bar">
         <div class="nav-back" @click="goBack">←</div>

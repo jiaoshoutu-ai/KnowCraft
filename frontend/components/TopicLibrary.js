@@ -2,6 +2,7 @@
 const TopicLibrary = {
   template: `
     <div class="topic-library-page">
+      <DesktopSidebar active-tab="topics"></DesktopSidebar>
       <!-- iPad Top Nav (visible on iPad only) -->
       <div class="ipad-top-nav">
         <div class="logo">

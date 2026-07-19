@@ -9,59 +9,7 @@ const HomePage = {
       </div>
 
       <!-- Desktop Sidebar (min-width: 1025px) -->
-      <div class="sidebar">
-        <div class="sidebar-logo">
-          <div class="logo">
-            <span>⚡</span>
-            <span>KnowCraft</span>
-          </div>
-        </div>
-        <div class="sidebar-nav">
-          <div class="nav-item active">
-            <span class="nav-item-icon">🏠</span>
-            <span>首页</span>
-          </div>
-          <div class="nav-item" @click="goToTopicLibrary">
-            <span class="nav-item-icon">📚</span>
-            <span>话题库</span>
-          </div>
-          <div class="nav-item" @click="goToProfile">
-            <span class="nav-item-icon">👤</span>
-            <span>个人中心</span>
-          </div>
-        </div>
-        <div class="sidebar-admin">
-          <div class="admin-label">管理后台</div>
-          <div class="nav-item" @click="goToAdmin">
-            <span class="nav-item-icon">📊</span>
-            <span>数据概览</span>
-          </div>
-          <div class="nav-item" @click="goToAdmin">
-            <span class="nav-item-icon">📚</span>
-            <span>话题管理</span>
-          </div>
-          <div class="nav-item">
-            <span class="nav-item-icon">👥</span>
-            <span>用户管理</span>
-          </div>
-          <div class="nav-item">
-            <span class="nav-item-icon">⚔️</span>
-            <span>辩论记录</span>
-          </div>
-          <div class="nav-item">
-            <span class="nav-item-icon">⚙️</span>
-            <span>系统设置</span>
-          </div>
-        </div>
-        <div class="sidebar-user">
-          <div class="user-avatar">👨‍🎓</div>
-          <div class="user-info">
-            <div class="user-name">{{ user.username || '小明同学' }}</div>
-            <div class="user-level">Lv.{{ level.level }} {{ level.title }}</div>
-          </div>
-          <button class="sidebar-logout" @click="logout">退出</button>
-        </div>
-      </div>
+      <DesktopSidebar active-tab="home"></DesktopSidebar>
 
       <!-- iPad Top Nav (769px - 1024px) -->
       <div class="ipad-top-nav">

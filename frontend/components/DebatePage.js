@@ -2,6 +2,7 @@
 const DebatePage = {
   template: `
     <div class="debate-page">
+        <DesktopSidebar active-tab="debates"></DesktopSidebar>
         <!-- Status Bar (mobile only) -->
         <div class="status-bar">
           <span class="time">9:41</span>

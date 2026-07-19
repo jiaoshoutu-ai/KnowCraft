@@ -2,41 +2,26 @@
 const AdminLayout = {
   template: `
     <div class="admin-layout">
-      <aside class="admin-sidebar">
-        <div class="admin-logo">
-          <span class="logo-icon">⚡</span>
-          <span class="logo-text">KnowCraft 管理后台</span>
-        </div>
-        <nav class="admin-nav">
-          <router-link to="/admin" class="nav-link" active-class="active" exact>
-            <span class="nav-icon">📊</span>
-            <span>数据概览</span>
-          </router-link>
-          <router-link to="/admin/topics" class="nav-link" active-class="active">
-            <span class="nav-icon">📝</span>
-            <span>话题管理</span>
-          </router-link>
-          <router-link to="/admin/users" class="nav-link" active-class="active">
-            <span class="nav-icon">👥</span>
-            <span>用户管理</span>
-          </router-link>
-          <router-link to="/admin/settings" class="nav-link" active-class="active">
-            <span class="nav-icon">⚙️</span>
-            <span>系统设置</span>
-          </router-link>
-        </nav>
-        <div class="admin-footer">
-          <router-link to="/" class="nav-link">
-            <span class="nav-icon">🏠</span>
-            <span>返回前台</span>
-          </router-link>
-        </div>
-      </aside>
+      <DesktopSidebar :active-tab="activeTab"></DesktopSidebar>
       <main class="admin-main">
         <router-view></router-view>
       </main>
     </div>
-  `
+  `,
+  computed: {
+    activeTab() {
+      if (this.$route.path.startsWith('/admin/topics')) {
+        return 'topic-admin';
+      }
+      if (this.$route.path.startsWith('/admin/users')) {
+        return 'users';
+      }
+      if (this.$route.path.startsWith('/admin/settings')) {
+        return 'settings';
+      }
+      return 'dashboard';
+    }
+  }
 }
 
 // Admin Dashboard (overview)

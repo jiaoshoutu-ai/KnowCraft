@@ -2,6 +2,7 @@
 const ProfilePage = {
   template: `
     <div class="phone-frame profile-page">
+      <DesktopSidebar active-tab="profile"></DesktopSidebar>
       <div class="screen-container">
         <!-- Status bar -->
         <div class="status-bar">

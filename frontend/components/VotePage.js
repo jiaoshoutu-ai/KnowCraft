@@ -2,6 +2,7 @@
 const VotePage = {
   template: `
     <div class="vote-page">
+      <DesktopSidebar active-tab="topics"></DesktopSidebar>
       <!-- Nav Bar (mobile-first, matches prototype) -->
       <div class="nav-bar">
         <div class="nav-back" @click="goBack">←</div>

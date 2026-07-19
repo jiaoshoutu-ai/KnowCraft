@@ -1,7 +1,8 @@
 // Feedback page component - matches prototype design
 const FeedbackPage = {
   template: `
-    <div class="phone-frame">
+    <div class="phone-frame feedback-page">
+      <DesktopSidebar active-tab="debates"></DesktopSidebar>
       <div class="screen-container">
         <!-- Status bar -->
         <div class="status-bar">
