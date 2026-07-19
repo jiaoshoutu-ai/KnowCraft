@@ -303,7 +303,12 @@ const DebateRecordsPage = {
             <div v-else class="dashboard-section">
               <h2>最近记录</h2>
               <div class="admin-record-list">
-                <div v-for="history in histories" :key="history.session_id || history.id" class="admin-record-card">
+                <div
+                  v-for="history in histories"
+                  :key="history.session_id || history.id"
+                  class="admin-record-card clickable-record-card"
+                  @click="openEvaluation(history)"
+                >
                   <div class="admin-record-title">{{ history.topic_title || history.debate_topic_title || '未命名辩论' }}</div>
                   <div class="admin-record-meta">
                     <span>立场：{{ formatStance(history.user_stance) }}</span>
@@ -346,6 +351,10 @@ const DebateRecordsPage = {
     },
     formatTime(time) {
       return time ? new Date(time).toLocaleString() : '时间未知'
+    },
+    openEvaluation(history) {
+      if (!history.session_id) return
+      this.$router.push(`/feedback/session/${encodeURIComponent(history.session_id)}`)
     }
   }
 }

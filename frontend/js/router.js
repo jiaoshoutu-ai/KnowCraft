@@ -25,6 +25,10 @@ const routes = [
     component: DebatePage
   },
   {
+    path: '/feedback/session/:sessionId',
+    component: FeedbackPage
+  },
+  {
     path: '/feedback/:topicId/:debateTopicId/:userStance/:difficulty',
     component: FeedbackPage
   },

@@ -113,15 +113,19 @@ const FeedbackPage = {
   },
 
   async mounted() {
-    this.topicId = this.$route.params.topicId
-    this.debateTopicId = this.$route.params.debateTopicId
-    this.userStance = this.$route.params.userStance
-    this.difficulty = this.$route.params.difficulty
-    this.sessionId = this.$route.query.sessionId || ''
+    this.topicId = this.$route.params.topicId || ''
+    this.debateTopicId = this.$route.params.debateTopicId || ''
+    this.userStance = this.$route.params.userStance || ''
+    this.difficulty = this.$route.params.difficulty || ''
+    this.sessionId = this.$route.params.sessionId || this.$route.query.sessionId || ''
 
     if (this.sessionId) {
       try {
         const detail = await API.getHistoryDetail(this.sessionId);
+        this.topicId = detail.topic_id || this.topicId;
+        this.debateTopicId = detail.debate_topic_id || this.debateTopicId;
+        this.userStance = detail.user_stance || this.userStance;
+        this.difficulty = detail.difficulty || this.difficulty;
         if (detail.evaluation) {
           const e = detail.evaluation;
           this.evaluation = {

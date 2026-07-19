@@ -43,6 +43,8 @@ class EvaluationResponse(BaseModel):
 class HistoryDetailResponse(BaseModel):
     """Full debate detail including evaluation."""
     session_id: str
+    topic_id: str
+    debate_topic_id: str
     topic_title: str
     user_stance: str
     ai_stance: str
@@ -222,6 +224,8 @@ async def get_my_history_detail(
 
     return HistoryDetailResponse(
         session_id=session.session_id,
+        topic_id=session.topic_id,
+        debate_topic_id=session.debate_topic_id,
         topic_title=session.debate_topic.title if session.debate_topic else "",
         user_stance=session.user_stance.value,
         ai_stance=session.ai_stance.value,
