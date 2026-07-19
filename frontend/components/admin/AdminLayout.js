@@ -99,9 +99,23 @@ const AdminDashboard = {
   methods: {
     async loadStats() {
       try {
-        const topics = await API.getAllTopics(true)
+        const [topics, users] = await Promise.all([
+          API.getAllTopics(true),
+          API.getAdminUsers()
+        ])
+        const totalDebates = users.reduce((sum, siteUser) => {
+          return sum + Number(siteUser.debate_count || 0)
+        }, 0)
+        const weightedScoreSum = users.reduce((sum, siteUser) => {
+          return sum + Number(siteUser.average_score || 0) * Number(siteUser.debate_count || 0)
+        }, 0)
+
         this.stats.totalTopics = topics.length
-        this.stats.totalDebates = topics.reduce((sum, t) => sum + t.debate_count, 0)
+        this.stats.totalUsers = users.length
+        this.stats.totalDebates = totalDebates
+        this.stats.avgScore = totalDebates > 0
+          ? (weightedScoreSum / totalDebates).toFixed(1)
+          : '0.0'
       } catch (err) {
         console.error('Failed to load stats:', err)
       }
@@ -296,7 +310,7 @@ const DebateRecordsPage = {
                     <span>难度：{{ history.difficulty || '未知' }}</span>
                     <span>得分：{{ formatScore(history.score || history.total_score) }}</span>
                   </div>
-                  <div class="admin-record-time">{{ formatTime(history.created_at || history.updated_at) }}</div>
+                  <div class="admin-record-time">{{ formatTime(history.completed_at || history.created_at || history.updated_at) }}</div>
                 </div>
               </div>
             </div>
