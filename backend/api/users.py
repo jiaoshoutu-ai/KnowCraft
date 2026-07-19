@@ -13,7 +13,7 @@ from sqlalchemy.orm import selectinload
 from database import get_db
 from models.db_models import DebateSession, DebateTopic, Evaluation, DebatePhase
 from core.auth import get_current_user
-from models.db_models import User
+from models.db_models import User, UserRole
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -51,6 +51,95 @@ class HistoryDetailResponse(BaseModel):
     round_number: int
     completed_at: Optional[datetime] = None
     evaluation: Optional[EvaluationResponse] = None
+
+
+class AdminUserResponse(BaseModel):
+    """User info for administrator user management."""
+    id: str
+    username: str
+    email: str
+    avatar: str
+    role: str
+    debate_count: int
+    average_score: float
+    streak_days: int
+    created_at: datetime
+    last_active_at: datetime
+
+
+class UpdateUserRoleRequest(BaseModel):
+    """Request to update a user's permission role."""
+    role: str
+
+
+def require_admin(user: User) -> None:
+    """Raise 403 when current user is not an administrator."""
+    if user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="需要管理员权限",
+        )
+
+
+def to_admin_user_response(user: User) -> AdminUserResponse:
+    """Convert User ORM object to administrator response."""
+    return AdminUserResponse(
+        id=user.id,
+        username=user.username,
+        email=user.email or "",
+        avatar=user.avatar or "",
+        role=user.role.value,
+        debate_count=user.debate_count or 0,
+        average_score=user.average_score or 0.0,
+        streak_days=user.streak_days or 0,
+        created_at=user.created_at,
+        last_active_at=user.last_active_at,
+    )
+
+
+@router.get("/admin/users", response_model=list[AdminUserResponse])
+async def list_admin_users(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return all site users for administrators."""
+    require_admin(current_user)
+
+    result = await db.execute(
+        select(User).order_by(User.created_at.desc())
+    )
+    users = result.scalars().all()
+    return [to_admin_user_response(user) for user in users]
+
+
+@router.put("/admin/users/{user_id}/role", response_model=AdminUserResponse)
+async def update_admin_user_role(
+    user_id: str,
+    req: UpdateUserRoleRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update a user's administrator permission role."""
+    require_admin(current_user)
+
+    if req.role not in {UserRole.STUDENT.value, UserRole.ADMIN.value}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="无效的用户角色",
+        )
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    target_user = result.scalar_one_or_none()
+    if target_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="用户不存在",
+        )
+
+    target_user.role = UserRole(req.role)
+    await db.commit()
+    await db.refresh(target_user)
+    return to_admin_user_response(target_user)
 
 
 @router.get("/me/history", response_model=list[HistoryItem])

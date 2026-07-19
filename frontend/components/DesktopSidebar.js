@@ -25,13 +25,17 @@ const DesktopSidebar = {
           <span class="desktop-sidebar-icon">📚</span>
           <span>话题库</span>
         </div>
+        <div class="desktop-sidebar-item" :class="{ active: activeTab === 'debate-records' }" @click="goDebateRecords">
+          <span class="desktop-sidebar-icon">⚔️</span>
+          <span>辩论记录</span>
+        </div>
         <div class="desktop-sidebar-item" :class="{ active: activeTab === 'profile' }" @click="goProfile">
           <span class="desktop-sidebar-icon">👤</span>
           <span>个人中心</span>
         </div>
       </nav>
 
-      <nav class="desktop-sidebar-admin">
+      <nav v-if="isAdmin" class="desktop-sidebar-admin">
         <div class="desktop-sidebar-admin-label">管理后台</div>
         <div class="desktop-sidebar-item" :class="{ active: activeTab === 'dashboard' }" @click="goAdmin">
           <span class="desktop-sidebar-icon">📊</span>
@@ -41,13 +45,9 @@ const DesktopSidebar = {
           <span class="desktop-sidebar-icon">📚</span>
           <span>话题管理</span>
         </div>
-        <div class="desktop-sidebar-item" :class="{ active: activeTab === 'users' }">
+        <div class="desktop-sidebar-item" :class="{ active: activeTab === 'users' }" @click="goAdminUsers">
           <span class="desktop-sidebar-icon">👥</span>
           <span>用户管理</span>
-        </div>
-        <div class="desktop-sidebar-item" :class="{ active: activeTab === 'debates' }">
-          <span class="desktop-sidebar-icon">⚔️</span>
-          <span>辩论记录</span>
         </div>
         <div class="desktop-sidebar-item" :class="{ active: activeTab === 'settings' }">
           <span class="desktop-sidebar-icon">⚙️</span>
@@ -76,6 +76,9 @@ const DesktopSidebar = {
     };
   },
   computed: {
+    isAdmin() {
+      return this.user.role === 'admin';
+    },
     level() {
       return getUserLevel(this.user.debate_count || 0);
     }
@@ -94,6 +97,9 @@ const DesktopSidebar = {
     goTopicLibrary() {
       this.$router.push('/topic-library');
     },
+    goDebateRecords() {
+      this.$router.push('/debate-records');
+    },
     goProfile() {
       this.$router.push('/profile');
     },
@@ -102,6 +108,9 @@ const DesktopSidebar = {
     },
     goAdminTopics() {
       this.$router.push('/admin/topics');
+    },
+    goAdminUsers() {
+      this.$router.push('/admin/users');
     },
     logout() {
       API.logout();

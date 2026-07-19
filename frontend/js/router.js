@@ -32,6 +32,10 @@ const routes = [
     path: '/profile',
     component: ProfilePage
   },
+  {
+    path: '/debate-records',
+    component: DebateRecordsPage
+  },
   // Admin routes
   {
     path: '/admin',
@@ -52,6 +56,10 @@ const routes = [
       {
         path: 'topics/edit/:topicId',
         component: AdminTopicForm
+      },
+      {
+        path: 'users',
+        component: AdminUsersPage
       }
     ]
   }
@@ -67,8 +75,17 @@ router.beforeEach((to, from, next) => {
   const publicRoutes = ['/'];
   if (!publicRoutes.includes(to.path) && !API.isLoggedIn()) {
     next('/');
-  } else {
-    next();
+    return;
   }
+
+  if (to.path.startsWith('/admin')) {
+    const user = API.getUserInfo();
+    if (!user || user.role !== 'admin') {
+      next('/home');
+      return;
+    }
+  }
+
+  next();
 });
 

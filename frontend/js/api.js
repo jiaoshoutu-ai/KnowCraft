@@ -180,6 +180,28 @@ const API = {
     return user;
   },
 
+  async getAdminUsers() {
+    const response = await this._fetch(`${CONFIG.API_BASE}/api/users/admin/users`);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.detail || '获取用户列表失败');
+    }
+    return await response.json();
+  },
+
+  async updateAdminUserRole(userId, role) {
+    const response = await this._fetch(`${CONFIG.API_BASE}/api/users/admin/users/${encodeURIComponent(userId)}/role`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.detail || '更新用户权限失败');
+    }
+    return await response.json();
+  },
+
   // Token helpers
   getToken() {
     return localStorage.getItem('knowcraft_token');
