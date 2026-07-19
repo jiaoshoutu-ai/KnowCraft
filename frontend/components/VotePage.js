@@ -67,9 +67,20 @@ const VotePage = {
           </div>
 
           <!-- Step 2: Difficulty selection (shown after stance is selected) -->
-          <div v-if="selectedStance" class="vote-section">
-            <div class="vote-section-title">选择难度</div>
-            <div class="difficulty-options">
+          <div v-if="selectedStance" class="vote-section difficulty-section">
+            <div class="difficulty-section-toggle" @click="toggleDifficultySection">
+              <div>
+                <div class="vote-section-title difficulty-section-title">选择难度</div>
+                <div class="difficulty-selected-summary">
+                  当前难度：{{ selectedDifficultyLevel.icon }} {{ selectedDifficultyLevel.name }} {{ selectedDifficultyLevel.stars }}
+                </div>
+              </div>
+              <button class="difficulty-section-expand-btn" type="button">
+                {{ isDifficultyExpanded ? '收起' : '展开' }}
+              </button>
+            </div>
+
+            <div v-if="isDifficultyExpanded" class="difficulty-options">
               <div v-for="(level, index) in difficultyLevels" :key="index"
                    class="difficulty-card"
                    :class="{ 'is-selected': selectedDifficulty === index }"
@@ -121,8 +132,9 @@ const VotePage = {
       debateTopics: [],
       selectedTopic: null,
       selectedStance: null,
-      selectedDifficulty: null,
+      selectedDifficulty: 0,
       expandedDifficulty: null,
+      isDifficultyExpanded: false,
       difficultyLevels: [
         {
           name: '新手友好',
@@ -153,6 +165,10 @@ const VotePage = {
   },
 
   computed: {
+    selectedDifficultyLevel() {
+      return this.difficultyLevels[this.selectedDifficulty] || this.difficultyLevels[0]
+    },
+
     canStartDebate() {
       return this.selectedTopic !== null && this.selectedStance !== null && this.selectedDifficulty !== null
     }
@@ -160,6 +176,7 @@ const VotePage = {
 
   async mounted() {
     this.topicId = this.$route.params.topicId
+    this.loadSavedDifficulty()
     await this.fetchTopic()
   },
 
@@ -195,6 +212,18 @@ const VotePage = {
 
     selectDifficulty(index) {
       this.selectedDifficulty = index
+      localStorage.setItem('knowcraft_last_difficulty', String(index))
+    },
+
+    toggleDifficultySection() {
+      this.isDifficultyExpanded = !this.isDifficultyExpanded
+    },
+
+    loadSavedDifficulty() {
+      const savedDifficulty = Number(localStorage.getItem('knowcraft_last_difficulty'))
+      if (Number.isInteger(savedDifficulty) && savedDifficulty >= 0 && savedDifficulty < this.difficultyLevels.length) {
+        this.selectedDifficulty = savedDifficulty
+      }
     },
 
     toggleDescription(index) {

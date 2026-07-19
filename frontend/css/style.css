@@ -4491,10 +4491,51 @@ body {
   border-left: 4px solid var(--primary);
 }
 
+.difficulty-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+}
+
+.difficulty-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.difficulty-section-title {
+  margin-bottom: 8px;
+}
+
+.difficulty-selected-summary {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding-left: 12px;
+}
+
+.difficulty-section-expand-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--primary);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .difficulty-options {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 20px;
 }
 
 .difficulty-card {
