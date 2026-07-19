@@ -1260,6 +1260,7 @@ body {
   color: white;
   font-size: 48px;
   cursor: pointer;
+  position: relative;
 }
 
 .video-player iframe,
@@ -1267,8 +1268,25 @@ body {
   width: 100%;
   height: 100%;
   border: none;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 }
 
+.video-open-link {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
 /* Video info - matches prototype */
 .video-info {
   padding: 20px 24px;
@@ -4068,6 +4086,20 @@ body {
   background: var(--card);
   transition: all 0.2s;
   font-family: inherit;
+}
+
+.admin-form input,
+.admin-form textarea {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.admin-form select,
+.admin-form button,
+.admin-form label {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .form-group input:focus,

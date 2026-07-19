@@ -13,13 +13,22 @@ const TopicDetail = {
       <div class="video-player">
         <!-- Bilibili embed -->
         <iframe
-          v-if="bilibiliId"
-          :src="'https://player.bilibili.com/player.html?bvid=' + bilibiliId + '&page=1&autoplay=0'"
+          src="https://player.bilibili.com/player.html?isOutside=true&aid=116746019148801&bvid=BV1s1Jc6FEh5&cid=39102122405&p=1&autoplay=0"
           style="width:100%;height:100%;border:none;"
           scrolling="no"
           frameborder="no"
+          framespacing="0"
+          allow="autoplay; fullscreen; picture-in-picture"
           allowfullscreen="true"
         ></iframe>
+        <button
+          v-if="bilibiliId"
+          class="video-open-link"
+          type="button"
+          @click="openVideo"
+        >
+          新窗口打开
+        </button>
         <!-- Direct video URL -->
         <video
           v-else-if="isDirectVideo"
