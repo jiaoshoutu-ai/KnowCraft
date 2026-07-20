@@ -9,10 +9,12 @@ const API = {
     }
     const response = await fetch(url, { ...options, headers });
     if (response.status === 401) {
-      // Token invalid / expired — force logout
-      this.logout();
-      if (window.location.hash && window.location.hash !== '#/' && window.location.hash !== '#') {
-        window.location.hash = '#/';
+      if (token) {
+        // Token invalid / expired — force logout
+        this.logout();
+        if (window.location.hash && window.location.hash !== '#/' && window.location.hash !== '#') {
+          window.location.hash = '#/';
+        }
       }
       throw new Error('登录已过期，请重新登录');
     }
@@ -202,13 +204,47 @@ const API = {
     return await response.json();
   },
 
+  async guestLogin() {
+    const response = await fetch(`${CONFIG.API_BASE}/api/auth/guest`, {
+      method: 'POST'
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.detail || '游客登录失败');
+    }
+    const result = await response.json();
+    this.setToken(result.token);
+    this.setUserInfo(result.user);
+    sessionStorage.setItem('knowcraft_guest_session_active', '1');
+    return result;
+  },
+
+  async logout(options = {}) {
+    const token = this.getToken();
+    const user = this.getUserInfo();
+    if (token && user && user.role === 'guest') {
+      fetch(`${CONFIG.API_BASE}/api/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        keepalive: !!options.keepalive,
+      }).catch(() => {});
+    }
+    localStorage.removeItem('knowcraft_token');
+    localStorage.removeItem('knowcraft_user');
+    sessionStorage.removeItem('knowcraft_guest_session_active');
+    this.clearGuestState();
+  },
+
   // Token helpers
   getToken() {
     return localStorage.getItem('knowcraft_token');
   },
 
-  setToken(token) {
+  setToken(token, options = {}) {
     localStorage.setItem('knowcraft_token', token);
+    if (!options.preserveGuestState) {
+      this.clearGuestState();
+    }
   },
 
   setUserInfo(user) {
@@ -217,16 +253,59 @@ const API = {
 
   getUserInfo() {
     const data = localStorage.getItem('knowcraft_user');
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : this.getGuestUser();
   },
 
-  logout() {
-    localStorage.removeItem('knowcraft_token');
-    localStorage.removeItem('knowcraft_user');
+  getGuestUser() {
+    const guestId = this.getGuestId();
+    return {
+      id: guestId,
+      username: guestId,
+      avatar: '👀',
+      role: 'guest',
+      debate_count: this.getGuestDebateCount(),
+      average_score: 0,
+      streak_days: 0,
+    };
+  },
+
+  getGuestId() {
+    const existingGuestId = localStorage.getItem('knowcraft_guest_id');
+    if (existingGuestId) return existingGuestId;
+
+    const randomId = `游客${Math.floor(10000 + Math.random() * 90000)}`;
+    localStorage.setItem('knowcraft_guest_id', randomId);
+    return randomId;
+  },
+
+  getGuestDebateCount() {
+    return Number(localStorage.getItem('knowcraft_guest_debate_count') || '0');
+  },
+
+  canGuestStartDebate() {
+    return !this.isGuest() || this.getGuestDebateCount() < 2;
+  },
+
+  recordGuestDebateStart() {
+    if (!this.isGuest()) return;
+    localStorage.setItem(
+      'knowcraft_guest_debate_count',
+      String(this.getGuestDebateCount() + 1)
+    );
+  },
+
+  clearGuestState() {
+    localStorage.removeItem('knowcraft_guest_id');
+    localStorage.removeItem('knowcraft_guest_debate_count');
   },
 
   isLoggedIn() {
     return !!this.getToken();
+  },
+
+  isGuest() {
+    const user = this.getUserInfo();
+    return !!user && user.role === 'guest';
   }
 };
 

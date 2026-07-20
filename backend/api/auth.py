@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from jose import jwt
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from config import settings
 from database import get_db
@@ -18,7 +19,7 @@ from models.auth import (
     UserResponse,
     UpdateProfileRequest,
 )
-from models.db_models import User
+from models.db_models import User, UserRole, DebateSession
 from core.verification import store_code, verify_code
 from core.email import send_verification_email
 from core.auth import get_current_user
@@ -51,10 +52,87 @@ def _user_to_response(user: User) -> UserResponse:
     )
 
 
+async def _delete_guest_user(db: AsyncSession, user: User) -> None:
+    """Delete a guest user and all of its debate data."""
+    if user.role != UserRole.GUEST:
+        return
+
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.debate_sessions).selectinload(DebateSession.messages))
+        .options(selectinload(User.debate_sessions).selectinload(DebateSession.evaluation))
+        .where(User.id == user.id)
+    )
+    guest_user = result.scalar_one_or_none()
+    if guest_user is not None:
+        await db.delete(guest_user)
+
+
+async def _cleanup_expired_guest_users(db: AsyncSession) -> None:
+    """Remove guest users that have been inactive for more than one day."""
+    expired_before = datetime.utcnow() - timedelta(days=1)
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.debate_sessions).selectinload(DebateSession.messages))
+        .options(selectinload(User.debate_sessions).selectinload(DebateSession.evaluation))
+        .where(User.role == UserRole.GUEST)
+        .where(User.last_active_at < expired_before)
+    )
+    for guest_user in result.scalars().all():
+        await db.delete(guest_user)
+
+
 @router.get("/auth/me", response_model=UserResponse)
 async def get_me(user: User = Depends(get_current_user)):
     """Return current user info (from JWT token)."""
     return _user_to_response(user)
+
+
+@router.post("/auth/guest", response_model=AuthResponse)
+async def guest_login(db: AsyncSession = Depends(get_db)):
+    """Create a temporary guest user and return a JWT token."""
+    await _cleanup_expired_guest_users(db)
+
+    for _ in range(10):
+        guest_number = str(uuid.uuid4().int % 90000 + 10000)
+        guest_id = f"guest_{guest_number}"
+        result = await db.execute(select(User).where(User.id == guest_id))
+        if result.scalar_one_or_none() is None:
+            break
+    else:
+        guest_number = str(uuid.uuid4().int % 900000 + 100000)
+        guest_id = f"guest_{guest_number}"
+
+    now = datetime.utcnow()
+    user = User(
+        id=guest_id,
+        username=f"游客{guest_number}",
+        email=None,
+        email_verified=False,
+        avatar="👀",
+        role=UserRole.GUEST,
+        created_at=now,
+        last_active_at=now,
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    return AuthResponse(
+        token=_create_token(user),
+        user=_user_to_response(user),
+    )
+
+
+@router.post("/auth/logout")
+async def logout(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Logout current user; guest users are deleted immediately."""
+    await _delete_guest_user(db, user)
+    await db.commit()
+    return {"message": "已退出"}
 
 
 @router.put("/users/me", response_model=UserResponse)

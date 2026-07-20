@@ -29,7 +29,7 @@ const DesktopSidebar = {
           <span class="desktop-sidebar-icon">⚔️</span>
           <span>辩论记录</span>
         </div>
-        <div class="desktop-sidebar-item" :class="{ active: activeTab === 'profile' }" @click="goProfile">
+        <div v-if="!isGuest" class="desktop-sidebar-item" :class="{ active: activeTab === 'profile' }" @click="goProfile">
           <span class="desktop-sidebar-icon">👤</span>
           <span>个人中心</span>
         </div>
@@ -78,6 +78,9 @@ const DesktopSidebar = {
   computed: {
     isAdmin() {
       return this.user.role === 'admin';
+    },
+    isGuest() {
+      return this.user.role === 'guest';
     },
     level() {
       return getUserLevel(this.user.debate_count || 0);

@@ -96,8 +96,8 @@ const LoginPage = {
           </p>
 
           <div class="login-skip">
-            <button class="login-skip-btn" @click="goHome">
-              跳过登录（演示模式）
+            <button class="login-skip-btn" :disabled="guestLoggingIn" @click="handleGuestLogin">
+              {{ guestLoggingIn ? '正在进入...' : '游客模式，先体验一下' }}
             </button>
           </div>
         </div>
@@ -112,6 +112,7 @@ const LoginPage = {
       error: '',
       sending: false,
       verifying: false,
+      guestLoggingIn: false,
       countdown: 0,
       countdownTimer: null,
     };
@@ -124,7 +125,7 @@ const LoginPage = {
   mounted() {
     document.body.classList.add('login-route');
     // If already logged in, redirect to home
-    if (API.isLoggedIn()) {
+    if (API.isLoggedIn() && !API.isGuest()) {
       this.$router.push('/home');
     }
   },
@@ -156,6 +157,9 @@ const LoginPage = {
       this.verifying = true;
       try {
         const result = await API.verifyLogin(this.email, this.code);
+        if (API.isGuest()) {
+          await API.logout();
+        }
         API.setToken(result.token);
         API.setUserInfo(result.user);
         this.$router.push('/home');
@@ -176,8 +180,20 @@ const LoginPage = {
         }
       }, 1000);
     },
+    async handleGuestLogin() {
+      this.error = '';
+      this.guestLoggingIn = true;
+      try {
+        await API.guestLogin();
+        this.$router.push('/home');
+      } catch (e) {
+        this.error = e.message;
+      } finally {
+        this.guestLoggingIn = false;
+      }
+    },
     goHome() {
-      this.$router.push('/home');
+      this.handleGuestLogin();
     }
   }
 };

@@ -232,6 +232,15 @@ const VotePage = {
 
     startDebate() {
       if (!this.canStartDebate) return
+      if (!API.canGuestStartDebate()) {
+        const shouldBindEmail = confirm('游客可免费体验 2 场辩论。绑定邮箱后可继续辩论并保存评价记录，是否现在绑定？')
+        if (shouldBindEmail) {
+          this.$router.push('/')
+        }
+        return
+      }
+
+      API.recordGuestDebateStart()
       const debateTopic = this.debateTopics[this.selectedTopic]
       const difficultyName = this.difficultyLevels[this.selectedDifficulty].name
       this.$router.push(`/debate/${this.topicId}/${debateTopic.id}/${this.selectedStance}/${difficultyName}`)

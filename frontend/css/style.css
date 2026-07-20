@@ -1466,6 +1466,89 @@ body {
   flex-shrink: 0;
 }
 
+.home-search-box {
+  display: flex;
+  align-items: center;
+  width: 280px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.home-guest-bind-btn {
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.home-guest-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  border-radius: 16px;
+  color: var(--text);
+}
+
+.home-guest-banner strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.home-guest-banner span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.home-guest-banner button {
+  border: none;
+  border-radius: 999px;
+  background: #FFB300;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 9px 16px;
+  white-space: nowrap;
+}
+
+.home-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.home-search-clear {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #F1F3F5;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.home-empty-state {
+  padding: 40px 16px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 /* Detail content */
 .detail-content {
   max-width: 1100px;
@@ -5363,16 +5446,25 @@ body {
 
 .login-skip {
   margin-top: auto;
-  padding-top: 24px;
+  padding-top: 20px;
+  width: 100%;
+  text-align: center;
 }
 
 .login-skip-btn {
-  background: none;
-  border: none;
-  color: #B2BEC3;
-  font-size: 14px;
+  width: auto;
+  padding: 8px 14px;
+  border: 1px solid #D8D3FF;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #6C5CE7;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  text-decoration: underline;
+}
+
+.login-skip-btn:hover {
+  background: #F7F5FF;
 }
 
 /* ============================================

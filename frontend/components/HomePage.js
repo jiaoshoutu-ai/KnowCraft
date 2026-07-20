@@ -53,10 +53,24 @@ const HomePage = {
           <div class="page-subtitle">今天想要挑战哪个话题？</div>
         </div>
         <div class="top-actions">
-          <button class="btn-primary">
-            <span>🔍</span>
-            <span>搜索话题</span>
+          <button v-if="isGuest" class="home-guest-bind-btn" type="button" @click="goToLogin">
+            游客登录 · 绑定邮箱
           </button>
+          <div class="home-search-box">
+            <span class="search-icon">🔍</span>
+            <input
+              v-model="searchQuery"
+              class="home-search-input"
+              type="text"
+              placeholder="搜索话题..."
+            />
+            <button
+              v-if="searchQuery"
+              class="home-search-clear"
+              type="button"
+              @click="searchQuery = ''"
+            >×</button>
+          </div>
         </div>
       </div>
 
@@ -84,6 +98,14 @@ const HomePage = {
 
       <!-- Content Container -->
       <div class="content-container">
+        <div v-if="isGuest" class="home-guest-banner">
+          <div>
+            <strong>游客模式</strong>
+            <span>可免费体验 2 场辩论，绑定邮箱后可继续辩论并保存评价记录。</span>
+          </div>
+          <button type="button" @click="goToLogin">绑定邮箱</button>
+        </div>
+
         <!-- Stats Grid (Desktop/iPad only) -->
         <div class="stats-grid desktop-ipad-stats">
           <div class="stat-card">
@@ -119,8 +141,8 @@ const HomePage = {
           </div>
 
           <!-- Topics Grid -->
-          <div class="topics-grid">
-          <div v-for="topic in topics" :key="topic.id"
+          <div class="topics-grid" v-if="filteredTopics.length > 0">
+          <div v-for="topic in filteredTopics" :key="topic.id"
                @click="goToTopic(topic)"
                class="topic-card">
             <div class="topic-thumbnail">
@@ -144,6 +166,9 @@ const HomePage = {
             </div>
           </div>
         </div>
+        <div v-else class="home-empty-state">
+          没有找到匹配的话题
+        </div>
       </div>
 
       <!-- Mobile Bottom Navigation (max-width: 768px) -->
@@ -156,11 +181,11 @@ const HomePage = {
           <span class="nav-icon">📚</span>
           <span class="nav-label">话题库</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" @click="goToDebateRecords">
           <span class="nav-icon">⚔️</span>
           <span class="nav-label">我的辩论</span>
         </div>
-        <div class="nav-item" @click="goToProfile">
+        <div v-if="!isGuest" class="nav-item" @click="goToProfile">
           <span class="nav-icon">👤</span>
           <span class="nav-label">我的</span>
         </div>
@@ -171,6 +196,7 @@ const HomePage = {
   data() {
     return {
       topics: [],
+      searchQuery: '',
       loading: true,
       user: API.getUserInfo() || {
         username: '同学',
@@ -189,6 +215,23 @@ const HomePage = {
     avgScoreText() {
       const s = this.user.average_score;
       return typeof s === 'number' ? s.toFixed(1) : '0.0';
+    },
+    isGuest() {
+      return API.isGuest();
+    },
+    filteredTopics() {
+      const query = this.searchQuery.trim().toLowerCase();
+      if (!query) return this.topics;
+
+      return this.topics.filter(topic => {
+        const searchableText = [
+          topic.title,
+          topic.description,
+          topic.tag,
+          ...(topic.tags || [])
+        ].join(' ').toLowerCase();
+        return searchableText.includes(query);
+      });
     },
   },
 
@@ -228,7 +271,13 @@ const HomePage = {
       this.$router.push(`/topic/${topic.id}`);
     },
     goToTopicLibrary() {
-      alert('话题库功能开发中...');
+      this.$router.push('/topic-library');
+    },
+    goToLogin() {
+      this.$router.push('/');
+    },
+    goToDebateRecords() {
+      this.$router.push('/debate-records');
     },
     goToProfile() {
       this.$router.push('/profile');

@@ -74,20 +74,26 @@ const router = VueRouter.createRouter({
   routes
 });
 
-// Route guard — require login for all routes except the login page ('/')
+// Route guard — guests can browse, debate, and view their own debate records.
 router.beforeEach((to, from, next) => {
-  const publicRoutes = ['/'];
-  if (!publicRoutes.includes(to.path) && !API.isLoggedIn()) {
-    next('/');
-    return;
-  }
+  const user = API.getUserInfo();
 
   if (to.path.startsWith('/admin')) {
-    const user = API.getUserInfo();
-    if (!user || user.role !== 'admin') {
+    if (!API.isLoggedIn() || !user || user.role !== 'admin') {
       next('/home');
       return;
     }
+  }
+
+  if (to.path === '/profile' && (!API.isLoggedIn() || !user || user.role === 'guest')) {
+    next('/home');
+    return;
+  }
+
+  if (to.path === '/debate-records' && !API.isLoggedIn()) {
+    alert('请先进入游客模式或绑定邮箱后查看辩论记录');
+    next('/');
+    return;
   }
 
   next();

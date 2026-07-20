@@ -15,6 +15,7 @@ from database import Base
 class UserRole(str, enum.Enum):
     STUDENT = "student"
     ADMIN = "admin"
+    GUEST = "guest"
 
 
 class Stance(str, enum.Enum):
@@ -56,7 +57,10 @@ class User(Base):
     last_active_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    debate_sessions: Mapped[List["DebateSession"]] = relationship(back_populates="user")
+    debate_sessions: Mapped[List["DebateSession"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
 
 class Video(Base):

@@ -1,10 +1,11 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from jose import jwt, JWTError
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from config import settings
 from database import async_session_maker
@@ -19,6 +20,7 @@ from models.db_models import (
     Stance as StanceDB,
     DebatePhase,
     Difficulty as DifficultyDB,
+    UserRole,
 )
 
 router = APIRouter()
@@ -37,6 +39,47 @@ def _decode_user_id_from_token(token: Optional[str]) -> Optional[str]:
         return payload.get("sub")
     except JWTError:
         return None
+
+
+async def _get_active_user_id(user_id: Optional[str]) -> Optional[str]:
+    """Return active user id and clean expired guest users."""
+    if not user_id:
+        return None
+
+    expired_before = datetime.utcnow() - timedelta(days=1)
+    async with async_session_maker() as db:
+        expired_result = await db.execute(
+            select(User)
+            .options(selectinload(User.debate_sessions).selectinload(DebateSessionDB.messages))
+            .options(selectinload(User.debate_sessions).selectinload(DebateSessionDB.evaluation))
+            .where(User.role == UserRole.GUEST)
+            .where(User.last_active_at < expired_before)
+        )
+        for expired_guest in expired_result.scalars().all():
+            await db.delete(expired_guest)
+
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if user is None:
+            await db.commit()
+            return None
+
+        if user.role == UserRole.GUEST and user.last_active_at < expired_before:
+            guest_result = await db.execute(
+                select(User)
+                .options(selectinload(User.debate_sessions).selectinload(DebateSessionDB.messages))
+                .options(selectinload(User.debate_sessions).selectinload(DebateSessionDB.evaluation))
+                .where(User.id == user.id)
+            )
+            expired_guest = guest_result.scalar_one_or_none()
+            if expired_guest is not None:
+                await db.delete(expired_guest)
+            await db.commit()
+            return None
+
+        user.last_active_at = datetime.utcnow()
+        await db.commit()
+        return user.id
 
 
 async def _persist_debate_result(session, evaluation: dict) -> None:
@@ -196,7 +239,7 @@ async def debate_websocket(ws: WebSocket):
 
     # Extract user_id from JWT token in query string (?token=...)
     token = ws.query_params.get("token")
-    user_id = _decode_user_id_from_token(token)
+    user_id = await _get_active_user_id(_decode_user_id_from_token(token))
 
     try:
         while True:
